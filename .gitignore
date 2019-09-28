@@ -1,0 +1,9 @@
+.idea
+!.gitignore
+
+/Expect/*
+!/Expect/127.0.0.1.expect
+
+ServerInfo/*
+!/ServerInfo/example.sh
+
