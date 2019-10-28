@@ -1,0 +1,1 @@
+do shell script "bash /Users/sea/Documents/Scrip/Bash/iPac.sh"
