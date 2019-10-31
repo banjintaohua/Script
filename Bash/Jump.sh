@@ -9,6 +9,7 @@ function jump_proxy_list() {
         echo "已设置跳板机隧道"
         netstat -an | grep -E "127.0.0.1.($JUMP_PROXY_PORT).*LISTEN"
     fi
+    return $line
 }
 
 # 关闭跳板机隧道
@@ -26,14 +27,15 @@ function jump_proxy_kill() {
 
 # 设置跳板机的代理
 function set_jump_proxy () {
-  if [[ $(netstat -an | grep -c "$1") -lt 1 ]]; then
+  jump_proxy_list
+  if [[ $? -eq 0 ]]; then
       echo "正在设置跳板机隧道"
       /usr/bin/expect <<EXPECT
           spawn ssh $JUMP_SERVER_USER@$JUMP_SERVER -p $JUMP_SERVER_PORT -f -q -N -D 127.0.0.1:$JUMP_PROXY_PORT
           expect {
               "(yes/no)?"
                   {send "yes\n"; exp_continue}
-              "Password:"
+              "Password"
                   {send "$JUMP_SERVER_PASSWORD\n"; exp_continue}
               "Last login:"
                   {send "clear\n"}
@@ -42,7 +44,7 @@ function set_jump_proxy () {
 EXPECT
 
       # 删除原始记录
-      source /Users/sea/Documents/Scrip/Bash/Login/KnowHost.sh "$JUMO_KNOW_HOST"
+      source /Users/sea/Documents/Scrip/Bash/KnowHost.sh "$JUMO_KNOW_HOST"
       clear
 
       if [[ $(netstat -an | grep -c "$JUMP_PROXY_PORT") -lt 1 ]]; then
