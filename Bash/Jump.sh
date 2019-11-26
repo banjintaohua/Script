@@ -31,6 +31,7 @@ function set_jump_proxy () {
   if [[ $? -eq 0 ]]; then
       echo "正在设置跳板机隧道"
       /usr/bin/expect <<EXPECT
+          set timeout  -1
           spawn ssh $JUMP_SERVER_USER@$JUMP_SERVER -p $JUMP_SERVER_PORT -f -q -N -D 127.0.0.1:$JUMP_PROXY_PORT
           expect {
               "(yes/no)?"
