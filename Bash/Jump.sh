@@ -9,13 +9,12 @@ function jump_proxy_list() {
         echo "已设置跳板机隧道"
         netstat -an | grep -E "127.0.0.1.($JUMP_PROXY_PORT).*LISTEN"
     fi
-    return $line
+    return "$line"
 }
 
 # 关闭跳板机隧道
 function jump_proxy_kill() {
     netstat -an | grep -E "($JUMP_PROXY_PORT).*LISTEN"
-    # shellcheck disable=SC2009
     ps axu | grep -E "ssh.*127.0.0.1:$JUMP_PROXY_PORT" | grep -v grep | awk '{print $2}' | xargs -I {} kill {}
     line=$(netstat -an | grep -c -E "($JUMP_PROXY_PORT).*LISTEN")
     if [[ $line =~ ^[\ ]*0 ]]; then
@@ -28,7 +27,8 @@ function jump_proxy_kill() {
 # 设置跳板机的代理
 function set_jump_proxy () {
   jump_proxy_list
-  if [[ $? -eq 0 ]]; then
+  line=$?
+  if [[ $line -eq 0 ]]; then
       echo "正在设置跳板机隧道"
       /usr/bin/expect <<EXPECT
           set timeout  -1

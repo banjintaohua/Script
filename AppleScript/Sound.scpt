@@ -6,7 +6,13 @@ tell application "System Events"
 		repeat until exists tab group 1 of window 1
 		end repeat
 		tell table 1 of scroll area 1 of tab group 1 of window 1
-			set target to "External Headphones"
+			# set target to "DELL U2518D"
+			# set target to "External Headphones"
+			set target to "Bose Mini II SoundLink"
+			# set target to "桃花的AirPods"
+			# set target to "MacBook Pro 扬声器"
+			# 相互切换设备名称，使用第一行设备的名称
+			# set alternative to value of text field 1 of row 1
 			set alternative to "MacBook Pro Speakers"
 			set retry to 1 -- 重试次数，可为 0
 			set interval to 1 -- 重试间隔（秒），可为小数

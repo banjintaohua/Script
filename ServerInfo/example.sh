@@ -1,6 +1,7 @@
 #!/usr/bin/bash
 
 # 跳板机
+# shellcheck disable=SC2034
 JUMP_SERVER_USER="uese"
 JUMP_SERVER="server"
 JUMP_SERVER_PORT="port"
