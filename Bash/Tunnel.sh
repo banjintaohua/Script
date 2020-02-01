@@ -33,7 +33,7 @@ function set_proxy () {
         source /Users/sea/Documents/Scrip/Bash/Jump.sh
         for PORT in ${SCENE[*]} ; do
             echo "正在设置隧道, 端口: $PORT"
-            nohup /usr/bin/expect /Users/sea/Documents/Scrip/Expect/Forward.expect "${PORT}" > /var/tmp/tunnel/"$OPTION".expect.nohup 2>&1 &
+            nohup /usr/bin/expect /Users/sea/Documents/Scrip/Expect/Forward.expect "${PORT}" > /Users/sea/Documents/Config/Log/"$OPTION".expect.nohup 2>&1 &
         done
         echo "执行 : $OPTION list 查看隧道"
         echo "执行 : $OPTION kill 删除隧道"
