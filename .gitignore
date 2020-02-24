@@ -7,3 +7,7 @@
 ServerInfo/*
 !/ServerInfo/example.sh
 
+/RunTime/
+
+/AutoLogin/
+!/AutoLogin/127.0.0.1.sh
