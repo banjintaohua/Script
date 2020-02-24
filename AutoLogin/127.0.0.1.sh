@@ -2,7 +2,10 @@
 
 # 读取服务器信息
 # shellcheck disable=SC2039
-source ../ServerInfo/Server.sh "$(basename "$0")"
+# shellcheck disable=SC1090
+# shellcheck disable=SC2046
+source $(dirname "$0")/../ServerInfo/ServerInfo.sh
+source $(dirname "$0")/../ServerInfo/Initialization.sh "$(basename "$0")"
 
 # 目标服务器
 user=root
@@ -31,4 +34,4 @@ cat > ../RunTime/"$TARGET" <<EXPECT
 EXPECT
 
 # 执行文件
-/usr/bin/expect ../RunTime/"$TARGET"
+/usr/bin/expect $(dirname "$0")/../RunTime/"$TARGET"

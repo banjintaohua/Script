@@ -6,6 +6,7 @@
 
 ServerInfo/*
 !/ServerInfo/example.sh
+!/ServerInfo/Initialization.sh
 
 /RunTime/*
 !/RunTime/127.0.0.1

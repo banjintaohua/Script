@@ -84,8 +84,9 @@ function action() {
     esac
 }
 
-
-source /Users/sea/Documents/Scrip/ServerInfo/ServerInfo.sh
+# shellcheck disable=SC1090
+# shellcheck disable=SC2046
+source $(dirname "$0")/../ServerInfo/ServerInfo.sh
 get_param "$1"
 set_param
 action "$2"
