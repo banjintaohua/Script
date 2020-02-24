@@ -30,10 +30,13 @@ function set_proxy () {
     if [[ $line -gt 0 ]]; then
         echo "已设置 $line 条隧道"
     else
-        source /Users/sea/Documents/Scrip/Bash/Jump.sh
+        # shellcheck disable=SC1090
+        # shellcheck disable=SC2046
+        source $(dirname "$0")/../Bash/Jump.sh
         for PORT in ${SCENE[*]} ; do
             echo "正在设置隧道, 端口: $PORT"
-            nohup /usr/bin/expect /Users/sea/Documents/Scrip/Expect/Forward.expect "${PORT}" > /Users/sea/Documents/Config/Log/"$OPTION".expect.nohup 2>&1 &
+            # shellcheck disable=SC2046
+            nohup /usr/bin/expect $(dirname "$0")/../Expect/Forward.expect "${PORT}" > ~/Documents/Config/Log/"$OPTION".expect.nohup 2>&1 &
         done
         echo "执行 : $OPTION list 查看隧道"
         echo "执行 : $OPTION kill 删除隧道"
