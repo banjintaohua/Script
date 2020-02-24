@@ -35,4 +35,5 @@ expect {
         "~"
             {send "clear\n"}
 }
+expect eof
 interact
