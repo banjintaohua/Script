@@ -1,0 +1,15 @@
+    spawn ssh -p 22 root@127.0.0.1
+    expect {
+            "(yes/no)?"
+                {send "yes\n"; exp_continue}
+            "Password:"
+                {send "password\n"; exp_continue}
+            "root"
+                {send "ssh -p port root@127.0.0.1\n"; exp_continue}
+            "root@127.0.0.1's password:"
+                {send "password\n"; exp_continue}
+            "~"
+                {send "clear\n"}
+    }
+    expect eof
+    interact
