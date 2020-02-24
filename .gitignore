@@ -8,7 +8,7 @@ ServerInfo/*
 !/ServerInfo/example.sh
 
 /RunTime/*
-!/RunTime/127.0.0.1.sh
+!/RunTime/127.0.0.1
 
 /AutoLogin/*
 !/AutoLogin/127.0.0.1.sh
