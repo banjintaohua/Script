@@ -10,5 +10,6 @@ ServerInfo/*
 /RunTime/
 !/RunTime/127.0.0.1.sh
 
-/AutoLogin/
+/AutoLogin/*
 !/AutoLogin/127.0.0.1.sh
+/AutoLogin/
