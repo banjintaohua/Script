@@ -29,6 +29,7 @@ function set_jump_proxy () {
   jump_proxy_list
   line=$?
   if [[ $line -eq 0 ]]; then
+      jump_proxy_kill
       echo "正在设置跳板机隧道"
       /usr/bin/expect <<EXPECT
           set timeout  -1

@@ -28,8 +28,9 @@ function tunnel_kill() {
 function set_proxy () {
     line=$(netstat -an | grep -c -E "127.0.0.1.($PORTS).*LISTEN")
     if [[ $line -gt 0 ]]; then
-        echo "已设置 $line 条隧道"
+        tunnel_list
     else
+        tunnel_kill
         # shellcheck disable=SC1090
         # shellcheck disable=SC2046
         source $(dirname "$0")/../Bash/Jump.sh
@@ -81,7 +82,6 @@ function action() {
             tunnel_kill
             ;;
         *    )
-            echo '正在设置隧道'
             set_proxy
             ;;
     esac
