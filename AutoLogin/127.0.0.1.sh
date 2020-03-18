@@ -15,7 +15,7 @@ password=password
 # 删除原始记录
 ssh-keygen -R "$JUMP_KNOW_HOST"
 
-cat > ../RunTime/"$TARGET" <<EXPECT
+cat > $(dirname "$0")/../RunTime/"$TARGET" <<EXPECT
     spawn ssh -p $JUMP_SERVER_PORT $JUMP_SERVER_USER@$JUMP_SERVER
     expect {
             "(yes/no)?"
