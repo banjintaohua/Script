@@ -33,7 +33,7 @@ function set_jump_proxy () {
       echo "正在设置跳板机隧道"
       /usr/bin/expect <<EXPECT
           set timeout  -1
-          spawn ssh $JUMP_SERVER_USER@$JUMP_SERVER -p $JUMP_SERVER_PORT -f -q -N -D 127.0.0.1:$JUMP_PROXY_PORT
+          spawn ssh $JUMP_SERVER_USER@$JUMP_SERVER -p $JUMP_SERVER_PORT -f -q -N -C -D 127.0.0.1:$JUMP_PROXY_PORT
           expect {
               "(yes/no)?"
                   {send "yes\n"; exp_continue}
