@@ -31,22 +31,20 @@ function set_jump_proxy () {
   if [[ $line -eq 0 ]]; then
       jump_proxy_kill
       echo "正在设置跳板机隧道"
-      /usr/bin/expect <<EXPECT
-          set timeout  -1
-          spawn ssh $JUMP_SERVER_USER@$JUMP_SERVER -p $JUMP_SERVER_PORT -f -q -N -C -D 127.0.0.1:$JUMP_PROXY_PORT
+      /usr/bin/expect >> ~/Documents/Config/Log/jump.log 2>&1 <<EXPECT
+          set timeout -1
+          spawn ssh $JUMP_SERVER_USER@$JUMP_SERVER -p $JUMP_SERVER_PORT -f -q -N -D 127.0.0.1:$JUMP_PROXY_PORT
           expect {
-              "(yes/no)?"
+              "(yes/no"
                   {send "yes\n"; exp_continue}
               "Password"
-                  {send "$JUMP_SERVER_PASSWORD\n"; exp_continue}
-              "Last login:"
-                  {send "clear\n"}
+                  {send "$JUMP_SERVER_PASSWORD\n"}
           }
           expect eof
 EXPECT
 
       # 删除原始记录
-      source /Users/sea/Documents/Scrip/Bash/KnowHost.sh "$JUMO_KNOW_HOST"
+      source $(dirname "$0")/KnowHost.sh "$JUMP_KNOW_HOST"
       clear
 
       if [[ $(netstat -an | grep -c "$JUMP_PROXY_PORT") -lt 1 ]]; then
@@ -61,7 +59,9 @@ EXPECT
 }
 
 # 读取服务器信息
-source /Users/sea/Documents/Scrip/ServerInfo/ServerInfo.sh
+# shellcheck disable=SC1090
+# shellcheck disable=SC2046
+source $(dirname "$0")/../ServerInfo/ServerInfo.sh
 
 # 判断执行的命令
 if [[ $# == 1 ]]; then

@@ -15,10 +15,3 @@ TARGET_SERVER="server"
 TARGET_SERVER_PORT="port"
 TARGET_SERVER_PASSWORD="password"
 TARGET_PROXY_PORT="port"
-
-
-# 数据库代理端口
-DB_PROXY_PORTS=(port port)
-
-# 所有隧道代理端口
-TUNNEL_PROXY_PORTS=(port port)
