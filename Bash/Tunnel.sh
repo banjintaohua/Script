@@ -30,6 +30,10 @@ function set_proxy () {
   line=$?
   if [[ $line -eq 0 ]]; then
       tunnel_kill
+
+      # 删除原始记录
+      source $(dirname "$0")/KnowHost.sh "$JUMP_KNOW_HOST"
+
       echo "正在设置隧道"
       source $(dirname "$0")/Jump.sh
       /usr/bin/expect -d >> ~/Documents/Config/Log/tunnel.log 2>&1 <<EXPECT
@@ -40,8 +44,6 @@ function set_proxy () {
           expect eof
 EXPECT
 
-      # 删除原始记录
-      source $(dirname "$0")/KnowHost.sh "$JUMP_KNOW_HOST"
       clear
 
       if [[ $(netstat -an | grep -c "$TARGET_PROXY_PORT") -lt 1 ]]; then

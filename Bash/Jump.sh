@@ -30,6 +30,10 @@ function set_jump_proxy () {
   line=$?
   if [[ $line -eq 0 ]]; then
       jump_proxy_kill
+
+      # 删除原始记录
+      source $(dirname "$0")/KnowHost.sh "$JUMP_KNOW_HOST"
+
       echo "正在设置跳板机隧道"
       /usr/bin/expect >> ~/Documents/Config/Log/jump.log 2>&1 <<EXPECT
           set timeout -1
@@ -44,8 +48,6 @@ function set_jump_proxy () {
           interact
 EXPECT
 
-      # 删除原始记录
-      source $(dirname "$0")/KnowHost.sh "$JUMP_KNOW_HOST"
       clear
 
       if [[ $(netstat -an | grep -c "$JUMP_PROXY_PORT") -lt 1 ]]; then
