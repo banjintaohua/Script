@@ -41,6 +41,7 @@ function set_jump_proxy () {
                   {send "$JUMP_SERVER_PASSWORD\n"}
           }
           expect eof
+          interact
 EXPECT
 
       # 删除原始记录
