@@ -32,10 +32,12 @@ function set_jump_proxy () {
       jump_proxy_kill
 
       # 删除原始记录
+      # shellcheck disable=SC1090
+      # shellcheck disable=SC2046
       source $(dirname "$0")/KnowHost.sh "$JUMP_KNOW_HOST"
 
       echo "正在设置跳板机隧道"
-      /usr/bin/expect >> ~/Documents/Config/Log/jump.log 2>&1 <<EXPECT
+      /usr/bin/expect -d 2>&1 <<EXPECT
           set timeout -1
           spawn ssh $JUMP_SERVER_USER@$JUMP_SERVER -p $JUMP_SERVER_PORT -f -q -N -D 127.0.0.1:$JUMP_PROXY_PORT
           expect {

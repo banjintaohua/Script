@@ -32,11 +32,30 @@ function set_proxy () {
       tunnel_kill
 
       # 删除原始记录
+      # shellcheck disable=SC2046
+      # shellcheck disable=SC1090
       source $(dirname "$0")/KnowHost.sh "$JUMP_KNOW_HOST"
 
       echo "正在设置隧道"
+      # shellcheck disable=SC1090
+      # shellcheck disable=SC2046
       source $(dirname "$0")/Jump.sh
-      /usr/bin/expect -d >> ~/Documents/Config/Log/tunnel.log 2>&1 <<EXPECT
+
+      # 选取代理机器
+      timeout 3 bash -c "nc -vzw 2 $TARGET_SERVER $TARGET_SERVER_PORT -X 5 -x 127.0.0.1:4790"
+      # shellcheck disable=SC2181
+      if [ $? -ne 0 ]; then
+        timeout 3 bash -c "nc -vzw 2 $TARGET_BACKUP_SERVER $TARGET_SERVER_PORT -X 5 -x 127.0.0.1:4790"
+        TARGET_SERVER=$TARGET_BACKUP_SERVER
+        TARGET_SERVER_PASSWORD=$TARGET_BACKUP_SERVER_PASSWORD
+        if [ $? -ne 0 ]; then
+          echo "无法连接服务器$TARGET_BACKUP_SERVER $TARGET_SERVER"
+          exit
+        fi
+      fi
+
+      # 建立代理机器的隧道
+      /usr/bin/expect -d <<EXPECT
           set timeout -1
           spawn ssh $TARGET_USER@$TARGET_SERVER -p $TARGET_SERVER_PORT -f -N -D 127.0.0.1:$TARGET_PROXY_PORT -o \"ProxyCommand=nc -X 5 -x 127.0.0.1:4790 %h %p\"
           expect "password:"
