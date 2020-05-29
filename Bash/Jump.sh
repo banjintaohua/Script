@@ -41,9 +41,9 @@ function set_jump_proxy () {
           set timeout -1
           spawn ssh $JUMP_SERVER_USER@$JUMP_SERVER -p $JUMP_SERVER_PORT -f -q -N -D 127.0.0.1:$JUMP_PROXY_PORT
           expect {
-              "(yes/no"
+              "connecting (yes/no"
                   {send "yes\n"; exp_continue}
-              "Password"
+              "Password:"
                   {send "$JUMP_SERVER_PASSWORD\n"}
           }
           expect eof
