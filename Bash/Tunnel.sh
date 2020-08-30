@@ -57,7 +57,7 @@ function set_proxy () {
       # 建立代理机器的隧道
       /usr/bin/expect -d <<EXPECT
           set timeout -1
-          spawn ssh $TARGET_USER@$TARGET_SERVER -p $TARGET_SERVER_PORT -f -N -D 127.0.0.1:$TARGET_PROXY_PORT -o \"ProxyCommand=nc -X 5 -x 127.0.0.1:4790 %h %p\"
+          spawn ssh $TARGET_USER@$TARGET_SERVER -p $TARGET_SERVER_PORT -f -N -D 127.0.0.1:$TARGET_PROXY_PORT -o \"ProxyCommand=nc -x 127.0.0.1:4790 %h %p\"
           expect "password:"
           send "$TARGET_SERVER_PASSWORD\n"
           expect eof
