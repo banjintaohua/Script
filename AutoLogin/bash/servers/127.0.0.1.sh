@@ -17,14 +17,15 @@ else
 fi
 
 # 删除原始记录
-if [[  $(grep -c "[$SERVER]:$PORT" < ~/.ssh/known_hosts) -ge 1 ]]; then
-    ssh-keygen -R "[$SERVER]:$PORT"
+KNOW_HOSTS="\[$JUMP_SERVER\]:$JUMP_SERVER_PORT"
+if [[ $(grep -c "$KNOW_HOSTS" < ~/.ssh/known_hosts) -ge 1 ]]; then
+    ssh-keygen -R "'$KNOW_HOSTS'"
 fi
 
 # 删除原始记录
 ssh-keygen -R "[$JUMP_SERVER]:$JUMP_SERVER_PORT"
 
-cat > "$(dirname "$0")/runtime/$SERVER" <<EXPECT
+cat > "$(dirname "$0")/runtime/$SERVER" << EXPECT
     spawn ssh -p $JUMP_SERVER_PORT $JUMP_SERVER_USER@$JUMP_SERVER
 
     expect {

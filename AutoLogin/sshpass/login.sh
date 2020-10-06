@@ -42,7 +42,7 @@ fi
 
 # 删除原始记录
 KNOW_HOSTS="\[$JUMP_SERVER\]:$JUMP_SERVER_PORT"
-if [[  $(grep -c "$KNOW_HOSTS" < ~/.ssh/known_hosts) -ge 1 ]]; then
+if [[ $(grep -c "$KNOW_HOSTS" < ~/.ssh/known_hosts) -ge 1 ]]; then
     ssh-keygen -R "'$KNOW_HOSTS'"
 fi
 

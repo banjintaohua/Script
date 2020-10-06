@@ -25,7 +25,7 @@ function intranet_kill() {
 }
 
 # 设置隧道
-function set_proxy()  {
+function set_proxy() {
     intranet_list
     line=$?
     if [[ $line -eq 0 ]]; then

@@ -25,17 +25,20 @@ function jump_proxy_kill() {
 }
 
 # 设置跳板机的代理
-function set_jump_proxy () {
-  jump_proxy_list
-  line=$?
-  if [[ $line -eq 0 ]]; then
-      jump_proxy_kill
+function set_jump_proxy() {
+    jump_proxy_list
+    line=$?
+    if [[ $line -eq 0 ]]; then
+        jump_proxy_kill
 
         # 删除原始记录
-        ssh-keygen -R "[$JUMP_SERVER]:$JUMP_SERVER_PORT"
+        KNOW_HOSTS="\[$JUMP_SERVER\]:$JUMP_SERVER_PORT"
+        if [[ $(grep -c "$KNOW_HOSTS" < ~/.ssh/known_hosts) -ge 1 ]]; then
+            ssh-keygen -R "'$KNOW_HOSTS'"
+        fi
 
-      echo "正在设置跳板机隧道"
-      /usr/bin/expect -d 2>&1 <<EXPECT
+        echo "正在设置跳板机隧道"
+        /usr/bin/expect -d 2>&1 << EXPECT
           set timeout -1
           spawn ssh $JUMP_SERVER_USER@$JUMP_SERVER -p $JUMP_SERVER_PORT -o "TCPKeepAlive yes" -f -q -N -D 127.0.0.1:$JUMP_PROXY_PORT
           expect {
@@ -48,17 +51,17 @@ function set_jump_proxy () {
           interact
 EXPECT
 
-      clear
+        clear
 
-      if [[ $(netstat -an | grep -c "$JUMP_PROXY_PORT") -lt 1 ]]; then
-          echo "设置跳板机隧道失败"
-          exit
-      else
-          echo "执行 : jump list 查看隧道"
-          echo "执行 : jump kill 删除隧道"
-      fi
-  fi
-  echo '已设置跳板机隧道'
+        if [[ $(netstat -an | grep -c "$JUMP_PROXY_PORT") -lt 1 ]]; then
+            echo "设置跳板机隧道失败"
+            exit
+        else
+            echo "执行 : jump list 查看隧道"
+            echo "执行 : jump kill 删除隧道"
+        fi
+    fi
+    echo '已设置跳板机隧道'
 }
 
 # 读取服务器信息
@@ -67,16 +70,16 @@ source "$(dirname "$0")"/../config/config.sh
 # 判断执行的命令
 if [[ $# == 1 ]]; then
     case $1 in
-        list )
+        list)
             jump_proxy_list
             ;;
-        kill )
+        kill)
             jump_proxy_kill
             ;;
-        *    )
+        *)
             echo '参数非法'
             ;;
     esac
- else
+else
     set_jump_proxy "$JUMP_PROXY_PORT"
- fi
+fi

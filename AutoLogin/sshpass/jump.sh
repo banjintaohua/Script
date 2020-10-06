@@ -25,7 +25,7 @@ function jump_proxy_kill() {
 }
 
 # 设置跳板机的代理
-function set_jump_proxy()  {
+function set_jump_proxy() {
     jump_proxy_list
     line=$?
     if [[ $line -eq 0 ]]; then
@@ -33,7 +33,7 @@ function set_jump_proxy()  {
 
         # 删除原始记录
         KNOW_HOST="\[$JUMP_SERVER\]:$JUMP_SERVER_PORT"
-        if [[  $(grep -c "$KNOW_HOST" < ~/.ssh/known_hosts) -ge 1 ]]; then
+        if [[ $(grep -c "$KNOW_HOST" < ~/.ssh/known_hosts) -ge 1 ]]; then
             ssh-keygen -R "$KNOW_HOST"
         fi
 
