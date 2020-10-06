@@ -40,6 +40,12 @@ else
     source "$CONFIG_FILE"
 fi
 
+# 删除原始记录
+KNOW_HOSTS="\[$JUMP_SERVER\]:$JUMP_SERVER_PORT"
+if [[  $(grep -c "$KNOW_HOSTS" < ~/.ssh/known_hosts) -ge 1 ]]; then
+    ssh-keygen -R "'$KNOW_HOSTS'"
+fi
+
 # 内网服务器
 if [ "$SERVER_TYPE" == 'intranet' ]; then
     # 判断是否需要使用密码登录
@@ -47,19 +53,27 @@ if [ "$SERVER_TYPE" == 'intranet' ]; then
         sshpass -p "$PASSWORD" \
             ssh "$USER@$SERVER" -p "$PORT" \
             -o 'StrictHostKeyChecking=no' \
-            -o "ProxyCommand=nc -x 127.0.0.1:$JUMP_PROXY_PORT %h %p"
+            -o "ProxyCommand=nc -x 127.0.0.1:$JUMP_PROXY_PORT %h %p" \
+            -v
     else
         sshpass -p "$JUMP_SERVER_PASSWORD" \
             ssh "$JUMP_SERVER_USER@$JUMP_SERVER" -p "$JUMP_SERVER_PORT" \
-            -o 'StrictHostKeyChecking=no' \
             -tt \
-            ssh "$USER@$SERVER" -p "$PORT"
+            -o 'StrictHostKeyChecking=no' \
+            -v \
+            ssh "$USER@$SERVER" -p "$PORT" \
+            -o 'StrictHostKeyChecking=no' \
+            -v
     fi
 else
     if [ "$USE_PASSWORD" == 'yes' ]; then
         sshpass -p "$PASSWORD" \
-            ssh "$USER@$SERVER" -p "$PORT"
+            ssh "$USER@$SERVER" -p "$PORT" \
+            -o 'StrictHostKeyChecking=no' \
+            -v
     else
-        ssh "$USER@$SERVER" -p "$PORT"
+        ssh "$USER@$SERVER" -p "$PORT" \
+            -o 'StrictHostKeyChecking=no' \
+            -v
     fi
 fi
