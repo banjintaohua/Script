@@ -31,16 +31,16 @@ function set_jump_proxy() {
     if [[ $line -eq 0 ]]; then
         jump_proxy_kill
 
-        # 删除原始记录
-        KNOW_HOST="\[$JUMP_SERVER\]:$JUMP_SERVER_PORT"
-        if [[ $(grep -c "$KNOW_HOST" < ~/.ssh/known_hosts) -ge 1 ]]; then
-            ssh-keygen -R "$KNOW_HOST"
-        fi
+#        # 删除原始记录
+#        if [[ $(grep -c "$JUMP_SERVER" < ~/.ssh/known_hosts) -ge 1 ]]; then
+#            ssh-keygen -R "[$JUMP_SERVER]:$JUMP_SERVER_PORT"
+#        fi
 
         echo "正在设置跳板机隧道"
         sshpass -p "$JUMP_SERVER_PASSWORD" \
             ssh "$JUMP_SERVER_USER@$JUMP_SERVER" -p "$JUMP_SERVER_PORT" \
             -o "TCPKeepAlive yes" \
+            -o 'StrictHostKeyChecking=no' \
             -f -q -N -D "127.0.0.1:$JUMP_PROXY_PORT"
 
         clear

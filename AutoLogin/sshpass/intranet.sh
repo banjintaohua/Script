@@ -39,7 +39,7 @@ function set_proxy() {
         # 先用 Proxifier 代理
         sshpass -p "$INTRANET_SERVER_PASSWORD" \
             ssh "$INTRANET_SERVER_USER@$INTRANET_SERVER" -p "$INTRANET_SERVER_PORT" \
-            -f -N -D "127.0.0.1:$INTRANET_PROXY_PORT"
+            -f -q -N -D "127.0.0.1:$INTRANET_PROXY_PORT"
 
         clear
 
@@ -47,8 +47,8 @@ function set_proxy() {
             echo "设置内网服务器隧道失败"
             exit
         else
-            echo "执行 : tunnel list 查看内网服务器隧道"
-            echo "执行 : tunnel kill 删除内网服务器隧道"
+            echo "执行 : intranet list 查看内网服务器隧道"
+            echo "执行 : intranet kill 删除内网服务器隧道"
         fi
     fi
     echo '已设置内网服务器隧道'
