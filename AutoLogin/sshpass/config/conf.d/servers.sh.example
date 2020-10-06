@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# shellcheck disable=SC2034
+
+# 服务器信息
+SERVERS=()
+SERVERS[0]='192.168.8.1'
+SERVERS[1]='192.168.8.2'

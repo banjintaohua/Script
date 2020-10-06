@@ -1,0 +1,58 @@
+#!/usr/bin/expect
+
+# 读取配置文件
+source /path/to/config
+
+# 设置永不超时
+set timeout -1
+
+# 根据用户的选择设置要连接的服务器
+if { $argc == 0 } {
+    puts "**************************"
+    puts "① $One"
+    puts "② $Two"
+    puts "③ $Three"
+    puts "④ $Four"
+    puts "⑤ $Five"
+    puts "⑥ $Six"
+    puts "⑦ $Seven"
+    puts "⑧ $Eight"
+    puts "⑨ $Nine"
+    puts "⑩ $Ten"
+    puts "⑪ $Eleven"
+    puts "⑫ $Twelve"
+    puts "⑬ $Thirteen"
+    puts "⑭ $Fourteen"
+    puts "⑮ $Fifteen"
+    puts "⑯ $Sixteen"
+    puts "⑰ $Seventeen"
+    puts "⑱ $Eighteen"
+    puts "⑲ $Nineteen"
+    puts "**************************"
+    puts "请选择需要登录的服务器 :"
+
+    expect {
+        -re {\d+} {
+            set SERVER $expect_out(0,string)
+        }
+        "\n" {
+            puts "********************************************"
+            puts "请选择正确范围的服务器"
+            puts "********************************************"
+            exit
+        }
+    }
+} else {
+    set SERVER [lindex $argv 0]
+}
+
+# 提示连接的服务器
+puts "您选择的服务器为 : $SERVER"
+puts "********************************************"
+
+# 连接服务器
+spawn /usr/bin/expect /path/to/folder/$SERVER.expect
+expect eof
+interact
+
+

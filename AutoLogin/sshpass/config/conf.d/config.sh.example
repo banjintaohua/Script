@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# shellcheck disable=SC2034
+
+# 跳板机
+JUMP_SERVER_USER='user'
+JUMP_SERVER='ip'
+JUMP_SERVER_PORT='port'
+JUMP_SERVER_PASSWORD='password'
+JUMP_KNOW_HOST='[ip]:port'
+
+# 内网服务器
+INTRANET_SERVER_USER='user'
+INTRANET_SERVER='ip'
+INTRANET_SERVER_PORT='port'
+INTRANET_SERVER_PASSWORD='password'
+
+# 端口映射
+JUMP_PROXY_PORT='1234'
+INTRANET_PROXY_PORT='1234'

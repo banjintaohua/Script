@@ -1,0 +1,22 @@
+#!/usr/bin/expect
+
+# 读取服务器信息
+source /path/to/file
+
+# 设置永不超时
+set timeout -1
+
+# 删除原始记录
+spawn ssh-keygen -R $JUMP_KNOW_HOST
+
+# 连接目标服务器
+spawn ssh -v -p $JUMP_SERVER_PORT $JUMP_SERVER_USER@$JUMP_SERVER -N -D 127.0.0.1:$JUMP_PROXY_PORT
+expect {
+    "(yes/no"
+        {send "yes\n"; exp_continue}
+    "password:"
+        {send "$JUMP_SERVER_PASSWORD\n"; exp_continue}
+    "Last login:"
+        {send "clear\n"}
+}
+expect eof

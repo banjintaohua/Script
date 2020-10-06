@@ -1,10 +1,7 @@
 #!/usr/bin/expect
 
-# 目标服务器
-set user        user
-set ip          ip
-set port        port
-set password    password
+# 读取服务器信息
+source /path/to/file
 
 # 获取文件名(文件名被命名为了服务器 IP)
 spawn echo $argv0
@@ -17,21 +14,21 @@ expect {
 # 删除原始记录
 spawn ssh-keygen -R $JUMP_KNOW_HOST
 
-#  连接跳板机
+# 连接跳板机
 spawn ssh -p $JUMP_SERVER_PORT $JUMP_SERVER_USER@$JUMP_SERVER
 expect {
         "(yes/no)?"
             {send "yes\n"; exp_continue}
-        "Password:"
+        "password:"
             {send "$JUMP_SERVER_PASSWORD\n"; exp_continue}
 }
 
-# 连接目标服务器
+# 连接内网服务器
 expect {
         "$JUMP_SERVER_USER"
-            {send "ssh -v $user@$TARGET\n"; exp_continue}
-        "$user@$TARGET's password:"
-            {send "$password\n"; exp_continue}
+            {send "ssh -v -p $INTRANET_SERVER_PORT $INTRANET_SERVER_USER@$INTRANET_SERVER\n"; exp_continue}
+        "$INTRANET_SERVER_USER@$INTRANET's password:"
+            {send "$INTRANET_SERVER_PASSWORD\n"; exp_continue}
         "~"
             {send "clear\n"}
 }

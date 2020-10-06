@@ -1,0 +1,39 @@
+#!/usr/bin/expect
+
+# 跳板机
+set JUMP_SERVER_USER            user
+set JUMP_SERVER                 ip
+set JUMP_SERVER_PORT            port
+set JUMP_SERVER_PASSWORD        password
+set JUMP_KNOW_HOST              \[ip\]:port
+
+# 内网服务器
+set INTRANET_SERVER_USER        user
+set INTRANET_SERVER             ip
+set INTRANET_SERVER_PORT        port
+set INTRANET_SERVER_PASSWORD    password
+
+# 端口映射
+set JUMP_PROXY_PORT             1234
+set INTRANET_PROXY_PORT         1234
+
+# 服务器信息
+set $One                        192.168.8.1
+set $Two                        192.168.8.2
+set $Three                      192.168.8.3
+set $Four                       192.168.8.4
+set $Five                       192.168.8.5
+set $Six                        192.168.8.6
+set $Seven                      192.168.8.7
+set $Eight                      192.168.8.8
+set $Nine                       192.168.8.9
+set $Ten                        192.168.8.10
+set $Eleven                     192.168.8.11
+set $Twelve                     192.168.8.12
+set $Thirteen                   192.168.8.13
+set $Fourteen                   192.168.8.14
+set $Fifteen                    192.168.8.15
+set $Sixteen                    192.168.8.16
+set $Seventeen                  192.168.8.17
+set $Eighteen                   192.168.8.18
+set $Nineteen                   192.168.8.19

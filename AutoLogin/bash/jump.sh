@@ -31,15 +31,13 @@ function set_jump_proxy () {
   if [[ $line -eq 0 ]]; then
       jump_proxy_kill
 
-      # 删除原始记录
-      # shellcheck disable=SC1090
-      # shellcheck disable=SC2046
-      source $(dirname "$0")/KnowHost.sh "$JUMP_KNOW_HOST"
+        # 删除原始记录
+        ssh-keygen -R "[$JUMP_SERVER]:$JUMP_SERVER_PORT"
 
       echo "正在设置跳板机隧道"
       /usr/bin/expect -d 2>&1 <<EXPECT
           set timeout -1
-          spawn ssh $JUMP_SERVER_USER@$JUMP_SERVER -p $JUMP_SERVER_PORT -f -q -N -D 127.0.0.1:$JUMP_PROXY_PORT
+          spawn ssh $JUMP_SERVER_USER@$JUMP_SERVER -p $JUMP_SERVER_PORT -o "TCPKeepAlive yes" -f -q -N -D 127.0.0.1:$JUMP_PROXY_PORT
           expect {
               "connecting (yes/no"
                   {send "yes\n"; exp_continue}
@@ -64,9 +62,7 @@ EXPECT
 }
 
 # 读取服务器信息
-# shellcheck disable=SC1090
-# shellcheck disable=SC2046
-source $(dirname "$0")/../ServerInfo/ServerInfo.sh
+source "$(dirname "$0")"/../config/config.sh
 
 # 判断执行的命令
 if [[ $# == 1 ]]; then
