@@ -32,7 +32,8 @@ function set_jump_proxy() {
         jump_proxy_kill
 
         # 删除原始记录
-        sed -in "s/.*$JUMP_SERVER.*//g" ~/.ssh/known_hosts | sed -in '/^$/d'
+        sed -in "s/.*$JUMP_SERVER.*//g" ~/.ssh/known_hosts
+        sed -in '/^$/d' ~/.ssh/known_hosts
         if [[ $(grep -c "$JUMP_SERVER" < ~/.ssh/known_hosts) -ge 1 ]]; then
             # 通过 ssh-keygen 会有各种转义的问题，改为使用 sed
             # ssh-keygen -R "[$JUMP_SERVER]:$JUMP_SERVER_PORT"
