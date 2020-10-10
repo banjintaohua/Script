@@ -39,6 +39,8 @@ function set_proxy() {
         # 先用 Proxifier 代理
         sshpass -p "$INTRANET_SERVER_PASSWORD" \
             ssh "$INTRANET_SERVER_USER@$INTRANET_SERVER" -p "$INTRANET_SERVER_PORT" \
+            -o 'TCPKeepAlive=yes' \
+            -o'StrictHostKeyChecking=no' \
             -f -q -N -D "127.0.0.1:$INTRANET_PROXY_PORT"
 
         clear

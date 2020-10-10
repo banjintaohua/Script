@@ -41,9 +41,12 @@ else
 fi
 
 # 删除原始记录
-KNOW_HOSTS="[$JUMP_SERVER]:$JUMP_SERVER_PORT"
-if [[ $(grep -c "$KNOW_HOSTS" < ~/.ssh/known_hosts) -ge 1 ]]; then
-    ssh-keygen -R "'$KNOW_HOSTS'"
+sed -in "s/.*$JUMP_SERVER.*//g" ~/.ssh/known_hosts | sed -in '/^$/d'
+if [[ $(grep -c "$JUMP_SERVER" < ~/.ssh/known_hosts) -ge 1 ]]; then
+    # 通过 ssh-keygen 会有各种转义的问题，改为使用 sed
+    # ssh-keygen -R "[$JUMP_SERVER]:$JUMP_SERVER_PORT"
+    echo "sed -in \"s/.*$JUMP_SERVER.*//g\" ~/.ssh/known_hosts | sed -in \"/^$/d\""
+    grep "$JUMP_SERVER" < ~/.ssh/known_hosts
 fi
 
 # 内网服务器
@@ -52,7 +55,8 @@ if [ "$SERVER_TYPE" == 'intranet' ]; then
     if [ "$USE_PASSWORD" == 'yes' ]; then
         sshpass -p "$PASSWORD" \
             ssh "$USER@$SERVER" -p "$PORT" \
-            -o 'StrictHostKeyChecking=no' \
+            -o "TCPKeepAlive=yes" \
+            -o "StrictHostKeyChecking=no" \
             -o "ProxyCommand=nc -x 127.0.0.1:$JUMP_PROXY_PORT %h %p" \
             -v \
             -t \
@@ -60,7 +64,8 @@ if [ "$SERVER_TYPE" == 'intranet' ]; then
     else
         sshpass -p "$JUMP_SERVER_PASSWORD" \
             ssh "$JUMP_SERVER_USER@$JUMP_SERVER" -p "$JUMP_SERVER_PORT" \
-            -o 'StrictHostKeyChecking=no' \
+            -o "TCPKeepAlive=yes" \
+            -o "StrictHostKeyChecking=no" \
             -v \
             -t \
             "ssh $USER@$SERVER -p $PORT -o 'StrictHostKeyChecking=no' -v -t 'cd $WORK_DIRECTORY; clear; bash'"
@@ -69,13 +74,15 @@ else
     if [ "$USE_PASSWORD" == 'yes' ]; then
         sshpass -p "$PASSWORD" \
             ssh "$USER@$SERVER" -p "$PORT" \
-            -o 'StrictHostKeyChecking=no' \
+            -o "TCPKeepAlive=yes" \
+            -o "StrictHostKeyChecking=no" \
             -v \
             -t \
             "cd $WORK_DIRECTORY; clear; bash"
     else
         ssh "$USER@$SERVER" -p "$PORT" \
-            -o 'StrictHostKeyChecking=no' \
+            -o "TCPKeepAlive=yes" \
+            -o "StrictHostKeyChecking=no" \
             -v \
             -t \
             "cd $WORK_DIRECTORY; clear; bash"

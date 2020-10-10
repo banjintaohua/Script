@@ -31,10 +31,14 @@ function set_jump_proxy() {
     if [[ $line -eq 0 ]]; then
         jump_proxy_kill
 
-#        # 删除原始记录
-#        if [[ $(grep -c "$JUMP_SERVER" < ~/.ssh/known_hosts) -ge 1 ]]; then
-#            ssh-keygen -R "[$JUMP_SERVER]:$JUMP_SERVER_PORT"
-#        fi
+        # 删除原始记录
+        sed -in "s/.*$JUMP_SERVER.*//g" ~/.ssh/known_hosts | sed -in '/^$/d'
+        if [[ $(grep -c "$JUMP_SERVER" < ~/.ssh/known_hosts) -ge 1 ]]; then
+            # 通过 ssh-keygen 会有各种转义的问题，改为使用 sed
+            # ssh-keygen -R "[$JUMP_SERVER]:$JUMP_SERVER_PORT"
+            echo "sed -in \"s/.*$JUMP_SERVER.*//g\" ~/.ssh/known_hosts | sed -in \"/^$/d\""
+            grep "$JUMP_SERVER" < ~/.ssh/known_hosts
+        fi
 
         echo "正在设置跳板机隧道"
         sshpass -p "$JUMP_SERVER_PASSWORD" \
