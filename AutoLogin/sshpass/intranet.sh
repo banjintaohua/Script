@@ -41,8 +41,8 @@ function set_proxy() {
             ssh "$INTRANET_SERVER_USER@$INTRANET_SERVER" -p "$INTRANET_SERVER_PORT" \
             -o 'TCPKeepAlive=yes' \
             -o'StrictHostKeyChecking=no' \
-            -f -q -N -D "127.0.0.1:$INTRANET_PROXY_PORT"
-
+            -f -q -N -D "127.0.0.1:$INTRANET_PROXY_PORT" \
+        2 >& 1 &
         clear
 
         if [[ $(netstat -an | grep -c "$INTRANET_PROXY_PORT") -lt 1 ]]; then

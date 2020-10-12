@@ -46,7 +46,8 @@ function set_jump_proxy() {
             ssh "$JUMP_SERVER_USER@$JUMP_SERVER" -p "$JUMP_SERVER_PORT" \
             -o "TCPKeepAlive=yes" \
             -o 'StrictHostKeyChecking=no' \
-            -f -q -N -D "127.0.0.1:$JUMP_PROXY_PORT"
+            -f -q -N -D "127.0.0.1:$JUMP_PROXY_PORT" \
+        2 >& 1 &
 
         clear
 
