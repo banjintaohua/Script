@@ -56,7 +56,7 @@ if [ "$SERVER_TYPE" == 'intranet' ]; then
     if [ "$USE_PASSWORD" == 'yes' ]; then
         sshpass -p "$PASSWORD" \
             ssh "$USER@$SERVER" -p "$PORT" \
-            -o "TCPKeepAlive=yes" \
+            -o "ServerAliveInterval=60" \
             -o "StrictHostKeyChecking=no" \
             -o "ProxyCommand=nc -x 127.0.0.1:$JUMP_PROXY_PORT %h %p" \
             -v \
@@ -65,7 +65,7 @@ if [ "$SERVER_TYPE" == 'intranet' ]; then
     else
         sshpass -p "$JUMP_SERVER_PASSWORD" \
             ssh "$JUMP_SERVER_USER@$JUMP_SERVER" -p "$JUMP_SERVER_PORT" \
-            -o "TCPKeepAlive=yes" \
+            -o "ServerAliveInterval=60" \
             -o "StrictHostKeyChecking=no" \
             -v \
             -t \
@@ -75,14 +75,14 @@ else
     if [ "$USE_PASSWORD" == 'yes' ]; then
         sshpass -p "$PASSWORD" \
             ssh "$USER@$SERVER" -p "$PORT" \
-            -o "TCPKeepAlive=yes" \
+            -o "ServerAliveInterval=60" \
             -o "StrictHostKeyChecking=no" \
             -v \
             -t \
             "cd $WORK_DIRECTORY; clear; bash"
     else
         ssh "$USER@$SERVER" -p "$PORT" \
-            -o "TCPKeepAlive=yes" \
+            -o "ServerAliveInterval=60" \
             -o "StrictHostKeyChecking=no" \
             -v \
             -t \

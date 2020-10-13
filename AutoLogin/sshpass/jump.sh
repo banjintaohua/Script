@@ -44,10 +44,10 @@ function set_jump_proxy() {
         echo "正在设置跳板机隧道"
         sshpass -p "$JUMP_SERVER_PASSWORD" \
             ssh "$JUMP_SERVER_USER@$JUMP_SERVER" -p "$JUMP_SERVER_PORT" \
-            -o "TCPKeepAlive=yes" \
+            -o "ServerAliveInterval=60" \
             -o 'StrictHostKeyChecking=no' \
             -f -q -N -D "127.0.0.1:$JUMP_PROXY_PORT" \
-        2 >& 1 &
+        2>&1 > /dev/null &
 
         clear
 
