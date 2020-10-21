@@ -6,6 +6,7 @@
 USER='user'
 PORT='port'
 
+SSH_TYPE='ssh'
 SERVER_TYPE='intranet'
 
 USE_PASSWORD='yes'

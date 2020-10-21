@@ -47,7 +47,7 @@ function set_jump_proxy() {
             -o "ServerAliveInterval=60" \
             -o 'StrictHostKeyChecking=no' \
             -f -q -N -D "127.0.0.1:$JUMP_PROXY_PORT" \
-        2>&1 > /dev/null &
+        2>&1 > /dev/null
 
         clear
 

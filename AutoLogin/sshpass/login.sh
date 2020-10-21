@@ -50,6 +50,14 @@ if [[ $(grep -c "$JUMP_SERVER" < ~/.ssh/known_hosts) -ge 1 ]]; then
     grep "$JUMP_SERVER" < ~/.ssh/known_hosts
 fi
 
+# 连接类型
+if [ "$SSH_TYPE" == 'mosh' ]; then
+    sshpass -p "$PASSWORD" \
+        mosh "$USER@$SERVER" \
+        --ssh="ssh -p $PORT"
+        "cd $WORK_DIRECTORY; clear; bash"
+fi
+
 # 内网服务器
 if [ "$SERVER_TYPE" == 'intranet' ]; then
     # 判断是否需要使用密码登录

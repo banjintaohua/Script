@@ -42,7 +42,8 @@ function set_proxy() {
             -o "ServerAliveInterval=60" \
             -o'StrictHostKeyChecking=no' \
             -f -q -N -D "127.0.0.1:$INTRANET_PROXY_PORT" \
-        2>&1 > /dev/null &
+        2>&1 > /dev/null
+
         clear
 
         if [[ $(netstat -an | grep -c "$INTRANET_PROXY_PORT") -lt 1 ]]; then
