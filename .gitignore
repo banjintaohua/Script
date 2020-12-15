@@ -1,25 +1,25 @@
 .idea
 !.gitignore
 
-/AutoLogin/
-/AutoLogin/*
+/auto_login/
+/auto_login/*
 
-!/AutoLogin/bash/config/config.sh
-!/AutoLogin/bash/servers/127.0.0.1.sh
-!/AutoLogin/bash/intranet.sh
-!/AutoLogin/bash/jump.sh
-!/AutoLogin/bash/login.sh
+!/auto_login/bash/config/config.sh
+!/auto_login/bash/servers/127.0.0.1.sh
+!/auto_login/bash/intranet.sh
+!/auto_login/bash/jump.sh
+!/auto_login/bash/login.sh
 
-!/AutoLogin/expect/config/config.expect
-!/AutoLogin/expect/servers/127.0.0.1.expect
-!/AutoLogin/expect/intranet.expect
-!/AutoLogin/expect/jump.expect
-!/AutoLogin/expect/login.expect
+!/auto_login/expect/config/config.expect
+!/auto_login/expect/servers/127.0.0.1.expect
+!/auto_login/expect/intranet.expect
+!/auto_login/expect/jump.expect
+!/auto_login/expect/login.expect
 
-!/AutoLogin/sshpass/config/config.sh
-!/AutoLogin/sshpass/config/conf.d/config.sh.example
-!/AutoLogin/sshpass/config/conf.d/servers.sh.example
-!/AutoLogin/sshpass/config/servers/127.0.0.1.sh
-!/AutoLogin/sshpass/intranet.sh
-!/AutoLogin/sshpass/jump.sh
-!/AutoLogin/sshpass/login.sh
+!/auto_login/sshpass/config/config.sh
+!/auto_login/sshpass/config/conf.d/config.sh.example
+!/auto_login/sshpass/config/conf.d/servers.sh.example
+!/auto_login/sshpass/config/servers/127.0.0.1.sh
+!/auto_login/sshpass/intranet.sh
+!/auto_login/sshpass/jump.sh
+!/auto_login/sshpass/login.sh
