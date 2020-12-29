@@ -20,7 +20,7 @@ cat <<-EOF
         fi
 
         echo 'step3: update project'
-        git fetch origin && git reset --hard origin/\$BRANCH && git clean -fd
+        git clean -fd && git fetch origin && git reset --hard origin/\$BRANCH
 
         echo 'check hexo server status'
         ps | grep hexo
