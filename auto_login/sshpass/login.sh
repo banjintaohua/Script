@@ -51,7 +51,8 @@ if [[ $(grep -c "$JUMP_SERVER" < ~/.ssh/known_hosts) -ge 1 ]]; then
 fi
 
 # 连接类型
-if [ "$SSH_TYPE" == 'mosh' ]; then
+if [[ "$SSH_TYPE" == 'mosh' || "$2" == 'mosh' ]]; then
+    SSH_TYPE='mosh'
     sshpass -p "$PASSWORD" \
         mosh "$USER@$SERVER" \
         --ssh="ssh -p $PORT"
