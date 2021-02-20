@@ -55,8 +55,8 @@ if [[ "$SSH_TYPE" == 'mosh' || "$2" == 'mosh' ]]; then
     SSH_TYPE='mosh'
     sshpass -p "$PASSWORD" \
         mosh "$USER@$SERVER" \
-        --ssh="ssh -p $PORT"
-        "cd $WORK_DIRECTORY; clear; bash"
+        --ssh="ssh -p $PORT" \
+        "bash"
 fi
 
 # 内网服务器
