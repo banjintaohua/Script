@@ -40,6 +40,10 @@ else
     source "$CONFIG_FILE"
 fi
 
+if [[ -n $IP ]]; then
+    SERVER=$IP
+fi
+
 # 删除原始记录
 sed -in "s/.*$JUMP_SERVER.*//g" ~/.ssh/known_hosts
 sed -in '/^$/d' ~/.ssh/known_hosts
