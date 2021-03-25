@@ -40,9 +40,9 @@ function set_proxy() {
         sshpass -p "$INTRANET_SERVER_PASSWORD" \
             ssh "$INTRANET_SERVER_USER@$INTRANET_SERVER" -p "$INTRANET_SERVER_PORT" \
             -o "ServerAliveInterval=60" \
-            -o'StrictHostKeyChecking=no' \
+            -o "StrictHostKeyChecking=no" \
             -f -q -N -D "127.0.0.1:$INTRANET_PROXY_PORT" \
-        2>&1 > /dev/null
+        > /dev/null 2>&1
 
         clear
 
