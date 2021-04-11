@@ -71,6 +71,7 @@ if [ "$SERVER_TYPE" == 'intranet' ]; then
             ssh "$USER@$SERVER" -p "$PORT" \
             -o "ServerAliveInterval=60" \
             -o "StrictHostKeyChecking=no" \
+            -o "UserKnownHostsFile /dev/null" \
             -o "ProxyCommand=nc -x 127.0.0.1:$JUMP_PROXY_PORT %h %p" \
             -v \
             -t \
@@ -80,9 +81,10 @@ if [ "$SERVER_TYPE" == 'intranet' ]; then
             ssh "$JUMP_SERVER_USER@$JUMP_SERVER" -p "$JUMP_SERVER_PORT" \
             -o "ServerAliveInterval=60" \
             -o "StrictHostKeyChecking=no" \
+            -o "UserKnownHostsFile /dev/null" \
             -v \
             -t \
-            "ssh $USER@$SERVER -p $PORT -o 'StrictHostKeyChecking=no' -v -t 'cd $WORK_DIRECTORY; clear; bash'"
+            "ssh $USER@$SERVER -p $PORT -o 'StrictHostKeyChecking=no' -o 'UserKnownHostsFile /dev/null' -v -t 'cd $WORK_DIRECTORY; clear; bash'"
     fi
 else
     if [ "$USE_PASSWORD" == 'yes' ]; then
@@ -90,6 +92,7 @@ else
             ssh "$USER@$SERVER" -p "$PORT" \
             -o "ServerAliveInterval=60" \
             -o "StrictHostKeyChecking=no" \
+            -o "UserKnownHostsFile /dev/null" \
             -v \
             -t \
             "cd $WORK_DIRECTORY; clear; bash"
@@ -97,6 +100,7 @@ else
         ssh "$USER@$SERVER" -p "$PORT" \
             -o "ServerAliveInterval=60" \
             -o "StrictHostKeyChecking=no" \
+            -o "UserKnownHostsFile /dev/null" \
             -v \
             -t \
             "cd $WORK_DIRECTORY; clear; bash"
