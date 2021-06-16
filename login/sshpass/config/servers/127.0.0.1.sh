@@ -2,7 +2,7 @@
 
 # shellcheck disable=SC2034
 
-# 目标服务器 (RMP 测试服务器 service tomcat7 restart 重启服务)
+# 目标服务器
 USER='user'
 PORT='port'
 
