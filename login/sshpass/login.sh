@@ -54,6 +54,20 @@ if [[ $(grep -c "$JUMP_SERVER" < ~/.ssh/known_hosts) -ge 1 ]]; then
     grep "$JUMP_SERVER" < ~/.ssh/known_hosts
 fi
 
+FORWARDING=''
+if [[ -n "$REMOTE_FORWARDING" ]]; then
+    FORWARDING="-R $REMOTE_FORWARDING"
+fi
+
+if [[ -n "$LOCAL_FORWARDING" ]]; then
+    FORWARDING="-L $LOCAL_FORWARDING"
+fi
+
+if [[ -n "$DYNAMIC_FORWARDING" ]]; then
+    FORWARDING="-D $DYNAMIC_FORWARDING"
+fi
+
+
 # 连接类型
 if [[ "$SSH_TYPE" == 'mosh' || "$2" == 'mosh' ]]; then
     SSH_TYPE='mosh'
@@ -101,6 +115,7 @@ else
             -o "ServerAliveInterval=60" \
             -o "StrictHostKeyChecking=no" \
             -o "UserKnownHostsFile /dev/null" \
+            $FORWARDING \
             -v \
             -t \
             "cd $WORK_DIRECTORY; clear; bash"
