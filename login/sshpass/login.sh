@@ -67,6 +67,7 @@ if [[ -n "$DYNAMIC_FORWARDING" ]]; then
     FORWARDING="-D $DYNAMIC_FORWARDING"
 fi
 
+# 再次执行 bash 是 nologin 模式，可以使用 bash -l 启动 login shell
 
 # 连接类型
 if [[ "$SSH_TYPE" == 'mosh' || "$2" == 'mosh' ]]; then
@@ -89,7 +90,7 @@ if [ "$SERVER_TYPE" == 'intranet' ]; then
             -o "ProxyCommand=nc -x 127.0.0.1:$JUMP_PROXY_PORT %h %p" \
             -v \
             -t \
-            "cd $WORK_DIRECTORY; clear; bash"
+            "cd $WORK_DIRECTORY; clear; bash -l"
     else
         sshpass -p "$JUMP_SERVER_PASSWORD" \
             ssh "$JUMP_SERVER_USER@$JUMP_SERVER" -p "$JUMP_SERVER_PORT" \
@@ -98,7 +99,7 @@ if [ "$SERVER_TYPE" == 'intranet' ]; then
             -o "UserKnownHostsFile /dev/null" \
             -v \
             -t \
-            "ssh $USER@$SERVER -p $PORT -o 'StrictHostKeyChecking=no' -o 'UserKnownHostsFile /dev/null' -v -t 'cd $WORK_DIRECTORY; clear; bash'"
+            "ssh $USER@$SERVER -p $PORT -o 'StrictHostKeyChecking=no' -o 'UserKnownHostsFile /dev/null' -v -t 'cd $WORK_DIRECTORY; clear; bash -l'"
     fi
 else
     if [ "$USE_PASSWORD" == 'yes' ]; then
@@ -109,7 +110,7 @@ else
             -o "UserKnownHostsFile /dev/null" \
             -v \
             -t \
-            "cd $WORK_DIRECTORY; clear; bash"
+            "cd $WORK_DIRECTORY; export ENV=/etc/profile; clear; bash -l"
     else
         ssh "$USER@$SERVER" -p "$PORT" \
             -o "ServerAliveInterval=60" \
@@ -118,6 +119,6 @@ else
             $FORWARDING \
             -v \
             -t \
-            "cd $WORK_DIRECTORY; clear; bash"
+            "cd $WORK_DIRECTORY; export ENV=/etc/profile; clear; bash -l"
     fi
 fi
