@@ -75,7 +75,7 @@ if [[ "$SSH_TYPE" == 'mosh' || "$2" == 'mosh' ]]; then
     sshpass -p "$PASSWORD" \
         mosh "$USER@$SERVER" \
         --ssh="ssh -p $PORT" \
-        "bash"
+        "bash -l"
 fi
 
 # 内网服务器
