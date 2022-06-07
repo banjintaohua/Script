@@ -24,6 +24,14 @@ function jump_proxy_kill() {
     fi
 }
 
+# 手动创建跳板机隧道
+function jump_proxy_login() {
+    ssh "$JUMP_SERVER_USER@$JUMP_SERVER" -p "$JUMP_SERVER_PORT" \
+        -o "ServerAliveInterval=60" \
+        -o 'StrictHostKeyChecking=no' \
+        -f -q -N -D "127.0.0.1:$JUMP_PROXY_PORT"
+}
+
 # 设置跳板机的代理
 function set_jump_proxy() {
     jump_proxy_list
@@ -73,6 +81,9 @@ if [[ $# == 1 ]]; then
             ;;
         kill)
             jump_proxy_kill
+            ;;
+        login)
+            jump_proxy_login
             ;;
         *)
             echo '参数非法'

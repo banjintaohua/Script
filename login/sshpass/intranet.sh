@@ -31,8 +31,12 @@ function set_proxy() {
     if [[ $line -eq 0 ]]; then
         intranet_kill
 
-        echo "正在设置隧道"
-        source "$(dirname "$0")"/jump.sh
+        if [[ $(netstat -an | grep -c "$JUMP_PROXY_PORT") -lt 1 ]]; then
+            echo "正在设置跳板机隧道"
+            source "$(dirname "$0")"/jump.sh login
+        else
+            echo "已设置跳板机隧道"
+        fi
 
         # 建立代理机器的隧道
         # 通过 ProxyCommand 会报错：client_loop: send disconnect: Broken pipe
