@@ -2,12 +2,12 @@
 
 # 查看隧道
 function intranet_list() {
-    line=$(netstat -an | grep -c -E "127.0.0.1.($INTRANET_PROXY_PORT).*LISTEN")
+    line=$(netstat -an | grep -c -E "$INTRANET_PROXY_HOST.($INTRANET_PROXY_PORT).*LISTEN")
     if [[ $line =~ ^[\ ]*0 ]]; then
         echo '未设置内网服务器隧道'
     else
         echo "已设置内网服务器隧道"
-        netstat -an | grep -E "127.0.0.1.($INTRANET_PROXY_PORT).*LISTEN"
+        netstat -an | grep -E "$INTRANET_PROXY_HOST.($INTRANET_PROXY_PORT).*LISTEN"
     fi
     return "$line"
 }
@@ -15,7 +15,7 @@ function intranet_list() {
 # 关闭隧道
 function intranet_kill() {
     netstat -an | grep -E "($INTRANET_PROXY_PORT).*LISTEN"
-    ps axu | grep -E "ssh.*127.0.0.1:$INTRANET_PROXY_PORT" | grep -v grep | awk '{print $2}' | xargs -I {} kill {}
+    ps axu | grep -E "ssh.*$INTRANET_PROXY_HOST:$INTRANET_PROXY_PORT" | grep -v grep | awk '{print $2}' | xargs -I {} kill {}
     line=$(netstat -an | grep -c -E "($INTRANET_PROXY_PORT).*LISTEN")
     if [[ $line =~ ^[\ ]*0 ]]; then
         echo '清理内网服务器隧道成功'
@@ -45,7 +45,7 @@ function set_proxy() {
             ssh "$INTRANET_SERVER_USER@$INTRANET_SERVER" -p "$INTRANET_SERVER_PORT" \
             -o "ServerAliveInterval=60" \
             -o "StrictHostKeyChecking=no" \
-            -f -q -N -D "127.0.0.1:$INTRANET_PROXY_PORT" \
+            -f -q -N -D "$INTRANET_PROXY_HOST:$INTRANET_PROXY_PORT" \
         > /dev/null 2>&1
 
         clear
