@@ -29,6 +29,7 @@ function jump_proxy_login() {
     ssh "$JUMP_SERVER_USER@$JUMP_SERVER" -p "$JUMP_SERVER_PORT" \
         -o "ServerAliveInterval=60" \
         -o 'StrictHostKeyChecking=no' \
+        -o 'UserKnownHostsFile=/dev/null' \
         -f -q -N -D "127.0.0.1:$JUMP_PROXY_PORT"
 }
 
@@ -54,6 +55,7 @@ function set_jump_proxy() {
             ssh "$JUMP_SERVER_USER@$JUMP_SERVER" -p "$JUMP_SERVER_PORT" \
             -o "ServerAliveInterval=60" \
             -o 'StrictHostKeyChecking=no' \
+            -o 'UserKnownHostsFile=/dev/null' \
             -f -q -N -D "127.0.0.1:$JUMP_PROXY_PORT" \
         > /dev/null 2>&1
 
