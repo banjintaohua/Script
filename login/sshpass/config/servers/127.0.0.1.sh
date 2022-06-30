@@ -11,7 +11,7 @@ WORK_DIRECTORY='/home'
 SSH_TYPE='ssh'
 SERVER_TYPE='intranet'
 USE_PASSWORD='yes'
-PASSWORD='1234'
+PASSWORD=$(path/to/script_password_decoder "U2FsdGVkX1+CyfZlxqHuFHTnhlRQw/QPlwaWaf63E3A=")
 
 # Forwarding
 REMOTE_FORWARDING=''

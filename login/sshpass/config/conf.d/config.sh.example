@@ -6,7 +6,7 @@
 JUMP_SERVER_USER='user'
 JUMP_SERVER='ip'
 JUMP_SERVER_PORT='port'
-JUMP_SERVER_PASSWORD='password'
+JUMP_SERVER_PASSWORD=$(path/to/script_password_decoder "U2FsdGVkX1+CyfZlxqHuFHTnhlRQw/QPlwaWaf63E3A=")
 JUMP_KNOW_HOST='[ip]:port'
 
 # 内网服务器
@@ -14,7 +14,7 @@ INTRANET_PROXY_HOST="127.0.0.1"
 INTRANET_SERVER_USER='user'
 INTRANET_SERVER='ip'
 INTRANET_SERVER_PORT='port'
-INTRANET_SERVER_PASSWORD='password'
+INTRANET_SERVER_PASSWORD=$(path/to/script_password_decoder "U2FsdGVkX1+CyfZlxqHuFHTnhlRQw/QPlwaWaf63E3A=")
 
 # 端口映射
 JUMP_PROXY_PORT='1234'
