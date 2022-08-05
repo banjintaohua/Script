@@ -58,7 +58,7 @@ function set_proxy() {
             echo "执行 : intranet list 查看内网服务器隧道"
             echo "执行 : intranet kill 删除内网服务器隧道"
             echo "建立内网服务器隧道成功，开始执行后置脚本"
-            postRun &
+            postRun > /dev/null 2>&1 &
         fi
     fi
 }
