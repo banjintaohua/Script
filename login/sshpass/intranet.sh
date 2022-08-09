@@ -24,6 +24,31 @@ function intranet_kill() {
     fi
 }
 
+# 调试隧道
+function intranet_xdebug() {
+    line=$(netstat -an | grep -c -E "$DEBUG_PROXY_HOST.($DBGP_LISTEN_PORT).*LISTEN")
+    if [[ $line =~ ^[\ ]*0 ]]; then
+        echo '正在设置内网服务器调试隧道'
+        sshpass -p "$INTRANET_SERVER_PASSWORD" \
+            ssh "$INTRANET_SERVER_USER@$INTRANET_SERVER" -p "$INTRANET_SERVER_PORT" \
+                -L "$INTRANET_PROXY_HOST:$DBGP_LISTEN_PORT:$INTRANET_SERVER:$DBGP_LISTEN_PORT" \
+                -R "$INTRANET_SERVER:$IDE_LISTEN_PORT:$INTRANET_PROXY_HOST:$IDE_LISTEN_PORT" \
+                -f -q -N -C \
+        2>&1
+    else
+        echo "已设置内网服务器调试隧道"
+    fi
+
+    if [[ $(netstat -an | grep -c -E "$DEBUG_PROXY_HOST.($DBGP_LISTEN_PORT).*LISTEN") -lt 1 ]]; then
+        echo "设置内网服务器调试隧道失败"
+    else
+        debug_process_id=$(ps -ef | grep "$INTRANET_SERVER:$IDE_LISTEN_PORT:$INTRANET_PROXY_HOST:$IDE_LISTEN_PORT" | grep -v 'grep' | awk '{printf $2}')
+        echo "设置内网服务器调试隧道成功"
+        netstat -an | grep -E "$DEBUG_PROXY_HOST.($DBGP_LISTEN_PORT).*LISTEN"
+        echo "执行 : kill $debug_process_id 关闭内网服务器调试隧道"
+    fi
+}
+
 # 设置隧道
 function set_proxy() {
     intranet_list
@@ -74,6 +99,10 @@ if [[ $# == 1 ]]; then
             ;;
         kill)
             intranet_kill
+            ;;
+        xdebug)
+            set_proxy
+            intranet_xdebug
             ;;
         *)
             echo '参数非法'

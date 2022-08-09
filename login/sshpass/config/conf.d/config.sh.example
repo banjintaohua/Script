@@ -19,6 +19,8 @@ INTRANET_SERVER_PASSWORD=$(path/to/script_password_decoder "U2FsdGVkX1+CyfZlxqHu
 # 端口映射
 JUMP_PROXY_PORT='1234'
 INTRANET_PROXY_PORT='1234'
+DBGP_LISTEN_PORT='9003'
+IDE_LISTEN_PORT='9001'
 
 # 建立隧道后的后置动作
 function postRun() {
