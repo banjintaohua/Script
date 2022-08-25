@@ -16,6 +16,7 @@
 ###   -P, --port        port number to use for connection.
 ###   -p, --password    password to use when connecting to server.
 ###   -t, --threshold   threshold for Seconds_Behind_Master
+###   -d, --dump        dump slava status and full processlist
 
 # 读取配置信息
 source "$(dirname "$0")"/config/config.sh
@@ -24,6 +25,7 @@ mysqlPort="$MYSQL_PORT"
 mysqlUser="$MYSQL_USER"
 mysqlPassword="$MYSQL_PASSWORD"
 threshold=50
+dump=0
 
 # 失败立即退出
 set -e
@@ -53,13 +55,22 @@ function main() {
             --form "body=$slaveStatus" \
             --form "group=monitor" > /dev/null 2>&1
     fi
+
+    # 转存当前主从信息
+    if [[ $dump -eq 1 ]]; then
+        dumpFile="/tmp/mysql_replication_monitor.dump."$(date +%Y-%m-%d-%H-%m-%S)
+        echo "$slaveStatus" >> "$dumpFile"
+
+        processlist=$(mysql -h"$mysqlHost" -P"$mysqlPort" -u"$mysqlUser" -p"$mysqlPassword" -e "show full processlist")
+        echo "$processlist" >> "$dumpFile"
+    fi
 }
 
 # 解析脚本参数
 args=$(
     getopt \
-        --option u::h::P::p::t:: \
-        --long help,user::,host::,port::,password::,threshold:: \
+        --option u::h::P::p::t::d \
+        --long help,user::,host::,port::,password::,threshold::,dump \
         -- "$@"
 )
 eval set -- "$args"
@@ -90,6 +101,10 @@ while true; do
         -t | --threshold)
             threshold=$2
             shift 2
+            ;;
+        -d | --dump)
+            dump=1
+            shift
             ;;
         --)
             shift
