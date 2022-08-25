@@ -33,7 +33,7 @@ function main() {
     diskUsage=$(df -h | grep -e " $mountPoint$" | awk '{print $5}' | sed 's/%//g')
     if [[ $diskUsage -ge $threshold ]]; then
         curl --location --request POST "$BARK_URL" \
-            --form "title=$mountPoint disk usage $diskUsage%" \
+            --form "title=$mountPoint disk usage reaches $diskUsage%" \
             --form "body=please release the disk space" \
             --form "group=monitor" > /dev/null 2>&1
     fi
