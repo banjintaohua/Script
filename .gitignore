@@ -23,3 +23,5 @@
 !/login/sshpass/intranet.sh
 !/login/sshpass/jump.sh
 !/login/sshpass/login.sh
+
+/monitor/config/conf.d/config.sh
