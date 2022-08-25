@@ -10,9 +10,9 @@
 ### Usage: disk_monitor.sh [options...]
 ###
 ### Options:
+###   -h, --help         show help message.
 ###   -m, --mount-point  mount point
-###   -t, --threshold   threshold
-###   -h, --help        show help message.
+###   -t, --threshold    threshold
 
 # 读取配置信息
 mountPoint="/"
@@ -58,10 +58,11 @@ while true; do
             threshold=$2
             shift 2
             ;;
-        *)
-            help
+        --)
+            shift
             break
             ;;
     esac
 done
+
 main
