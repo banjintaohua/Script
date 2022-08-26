@@ -21,6 +21,7 @@ source "$(dirname "$0")"/config/config.sh
 
 # 失败立即退出
 set -e
+set -o pipefail
 
 # 使用说明
 function help() {
