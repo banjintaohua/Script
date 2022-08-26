@@ -36,7 +36,6 @@ function help() {
     exit 1
 }
 
-# 磁盘使用率过高则发送告警
 function main() {
     slaveStatus=$(mysql -h"$mysqlHost" -P"$mysqlPort" -u"$mysqlUser" -p"$mysqlPassword" -e "show slave status\G")
 
@@ -68,12 +67,13 @@ function main() {
 
 # 解析脚本参数
 args=$(
-    getopt \
+    /usr/local/opt/gnu-getopt/bin/getopt \
         --option u::h::P::p::t::d \
         --long help,user::,host::,port::,password::,threshold::,dump \
         -- "$@"
 )
 eval set -- "$args"
+test $# -le 1 && help && exit 1
 
 # 处理脚本参数
 while true; do

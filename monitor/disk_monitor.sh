@@ -32,8 +32,9 @@ function help() {
 function main() {
     diskUsage=$(df -h | grep -e " $mountPoint$" | awk '{print $5}' | sed 's/%//g')
     if [[ $diskUsage -ge $threshold ]]; then
+        localIp=$(ifconfig eth0 | grep 'inet ' | awk '{print $2}')
         curl --location --request POST "$BARK_URL" \
-            --form "title=$mountPoint disk usage reaches $diskUsage%" \
+            --form "title=$localIp $mountPoint disk usage reaches $diskUsage%" \
             --form "body=please release the disk space" \
             --form "group=monitor" > /dev/null 2>&1
     fi
@@ -42,6 +43,7 @@ function main() {
 # 解析脚本参数
 args=$(/usr/local/opt/gnu-getopt/bin/getopt --option hm:t: --long help,mount-point:,threshold: -- "$@")
 eval set -- "$args"
+test $# -le 1 && help && exit 1
 
 # 处理脚本参数
 while true; do
