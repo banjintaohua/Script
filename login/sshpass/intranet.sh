@@ -7,7 +7,10 @@ function intranet_list() {
         echo '未设置内网服务器隧道'
     else
         echo "已设置内网服务器隧道"
+        netstat -an | grep -E "127.0.0.1.($JUMP_PROXY_PORT).*LISTEN"
         netstat -an | grep -E "$INTRANET_PROXY_HOST.($INTRANET_PROXY_PORT).*LISTEN"
+        echo "执行 : intranet kill 删除内网服务器隧道"
+        echo ""
     fi
     return "$line"
 }
@@ -22,31 +25,51 @@ function intranet_kill() {
     else
         echo "清理内网服务器隧道失败"
     fi
+
+    netstat -an | grep -E "$INTRANET_PROXY_HOST.($DBGP_CLIENT_PORT).*LISTEN"
+    line=$(netstat -an | grep -c -E "$INTRANET_PROXY_HOST.($DBGP_CLIENT_PORT).*LISTEN")
+    if [[ $line =~ ^[\ ]*0 ]]; then
+        echo '清理内网服务器调试隧道成功'
+    else
+        ps -ef | grep "$INTRANET_SERVER:$IDE_LISTEN_PORT:$INTRANET_PROXY_HOST:$IDE_LISTEN_PORT" | grep -v 'grep' | awk '{printf $2}' | xargs -I {} kill {}
+        line=$(netstat -an | grep -c -E "$INTRANET_PROXY_HOST.($DBGP_CLIENT_PORT).*LISTEN")
+        if [[ $line =~ ^[\ ]*0 ]]; then
+            echo '清理内网服务器调试隧道成功'
+        else
+            echo "清理内网服务器调试隧道失败"
+        fi
+    fi
 }
 
 # 调试隧道
 function intranet_xdebug() {
-    line=$(netstat -an | grep -c -E "$DEBUG_PROXY_HOST.($DBGP_LISTEN_PORT).*LISTEN")
+    line=$(netstat -an | grep -c -E "$DEBUG_PROXY_HOST.($DBGP_CLIENT_PORT).*LISTEN")
     if [[ $line =~ ^[\ ]*0 ]]; then
+        echo ''
         echo '正在设置内网服务器调试隧道'
-        sshpass -p "$INTRANET_SERVER_PASSWORD" \
-            ssh "$INTRANET_SERVER_USER@$INTRANET_SERVER" -p "$INTRANET_SERVER_PORT" \
-                -L "$INTRANET_PROXY_HOST:$DBGP_LISTEN_PORT:$INTRANET_SERVER:$DBGP_LISTEN_PORT" \
-                -R "$INTRANET_SERVER:$IDE_LISTEN_PORT:$INTRANET_PROXY_HOST:$IDE_LISTEN_PORT" \
-                -f -q -N -C \
-        2>&1
+        sshpass -p "$DBGP_PROXY_SERVER_PASSWORD" \
+            ssh "$DBGP_PROXY_SERVER_USER@$DBGP_PROXY_SERVER" -p "$DBGP_PROXY_SERVER_PORT" \
+            -L "$INTRANET_PROXY_HOST:$DBGP_CLIENT_PORT:$DBGP_PROXY_SERVER:$DBGP_CLIENT_PORT" \
+            -R "$INTRANET_SERVER:$IDE_LISTEN_PORT:$INTRANET_PROXY_HOST:$IDE_LISTEN_PORT" \
+            -f -q -N -C \
+            2>&1
+        echo "设置内网服务器调试隧道成功"
     else
         echo "已设置内网服务器调试隧道"
     fi
 
-    if [[ $(netstat -an | grep -c -E "$DEBUG_PROXY_HOST.($DBGP_LISTEN_PORT).*LISTEN") -lt 1 ]]; then
-        echo "设置内网服务器调试隧道失败"
-    else
-        debug_process_id=$(ps -ef | grep "$INTRANET_SERVER:$IDE_LISTEN_PORT:$INTRANET_PROXY_HOST:$IDE_LISTEN_PORT" | grep -v 'grep' | awk '{printf $2}')
-        echo "设置内网服务器调试隧道成功"
-        netstat -an | grep -E "$DEBUG_PROXY_HOST.($DBGP_LISTEN_PORT).*LISTEN"
-        echo "执行 : kill $debug_process_id 关闭内网服务器调试隧道"
+    if [[ $(netstat -an | grep -c -E "$INTRANET_PROXY_HOST.($DBGP_CLIENT_PORT).*LISTEN") -lt 1 ]]; then
+        echo "内网服务器调试隧道本地端口转发失败"
     fi
+
+    if [[ $(netstat -an | grep -c -E "$IDE_LISTEN_PORT.*LISTEN") -lt 1 ]]; then
+        echo "内网服务器调试隧道远程端口转发失败"
+    fi
+
+    debug_process_id=$(ps -ef | grep "$INTRANET_SERVER:$IDE_LISTEN_PORT:$INTRANET_PROXY_HOST:$IDE_LISTEN_PORT" | grep -v 'grep' | awk '{printf $2}')
+    netstat -an | grep -E "$INTRANET_PROXY_HOST.($DBGP_CLIENT_PORT).*LISTEN"
+    netstat -an | grep -E "($IDE_LISTEN_PORT).*LISTEN"
+    echo "执行 : kill $debug_process_id 关闭内网服务器调试隧道"
 }
 
 # 设置隧道
@@ -71,7 +94,7 @@ function set_proxy() {
             -o "ServerAliveInterval=60" \
             -o "StrictHostKeyChecking=no" \
             -f -q -N -D "$INTRANET_PROXY_HOST:$INTRANET_PROXY_PORT" \
-        > /dev/null 2>&1
+            > /dev/null 2>&1
 
         clear
 
@@ -110,4 +133,5 @@ if [[ $# == 1 ]]; then
     esac
 else
     set_proxy
+    intranet_xdebug
 fi
