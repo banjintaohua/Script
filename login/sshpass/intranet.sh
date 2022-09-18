@@ -49,9 +49,11 @@ function intranet_xdebug() {
         echo '正在设置内网服务器调试隧道'
         sshpass -p "$DBGP_PROXY_SERVER_PASSWORD" \
             ssh "$DBGP_PROXY_SERVER_USER@$DBGP_PROXY_SERVER" -p "$DBGP_PROXY_SERVER_PORT" \
+            -o "ServerAliveInterval=60" \
+            -o "StrictHostKeyChecking=no" \
             -L "$INTRANET_PROXY_HOST:$DBGP_CLIENT_PORT:$DBGP_PROXY_SERVER:$DBGP_CLIENT_PORT" \
             -R "$INTRANET_SERVER:$IDE_LISTEN_PORT:$INTRANET_PROXY_HOST:$IDE_LISTEN_PORT" \
-            -f -q -N -C \
+            -f -N -C \
             2>&1
         echo "设置内网服务器调试隧道成功"
     else
