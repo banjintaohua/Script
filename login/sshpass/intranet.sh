@@ -135,5 +135,4 @@ if [[ $# == 1 ]]; then
     esac
 else
     set_proxy
-    intranet_xdebug
 fi
