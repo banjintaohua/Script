@@ -2,12 +2,12 @@
 
 # 查看跳板机隧道
 function jump_proxy_list() {
-    line=$(netstat -an | grep -c -E "127.0.0.1.($JUMP_PROXY_PORT).*LISTEN")
+    line=$(netstat -an | grep -c -E "$JUMP_BIND_HOST.($JUMP_PROXY_PORT).*LISTEN")
     if [[ $line =~ ^[\ ]*0 ]]; then
         echo '未设置跳板机隧道'
     else
         echo "已设置跳板机隧道"
-        netstat -an | grep -E "127.0.0.1.($JUMP_PROXY_PORT).*LISTEN"
+        netstat -an | grep -E "$JUMP_BIND_HOST.($JUMP_PROXY_PORT).*LISTEN"
     fi
     return "$line"
 }
@@ -15,7 +15,7 @@ function jump_proxy_list() {
 # 关闭跳板机隧道
 function jump_proxy_kill() {
     netstat -an | grep -E "($JUMP_PROXY_PORT).*LISTEN"
-    ps axu | grep -E "ssh.*127.0.0.1:$JUMP_PROXY_PORT" | grep -v grep | awk '{print $2}' | xargs -I {} kill {}
+    ps axu | grep -E "ssh.*$JUMP_BIND_HOST:$JUMP_PROXY_PORT" | grep -v grep | awk '{print $2}' | xargs -I {} kill {}
     line=$(netstat -an | grep -c -E "($JUMP_PROXY_PORT).*LISTEN")
     if [[ $line =~ ^[\ ]*0 ]]; then
         echo '清理跳板机隧道成功'
@@ -30,7 +30,7 @@ function jump_proxy_login() {
         -o "ServerAliveInterval=60" \
         -o 'StrictHostKeyChecking=no' \
         -o 'UserKnownHostsFile=/dev/null' \
-        -f -q -N -D "127.0.0.1:$JUMP_PROXY_PORT"
+        -f -q -N -D "$JUMP_BIND_HOST:$JUMP_PROXY_PORT"
 }
 
 # 设置跳板机的代理
@@ -56,12 +56,12 @@ function set_jump_proxy() {
             -o "ServerAliveInterval=60" \
             -o 'StrictHostKeyChecking=no' \
             -o 'UserKnownHostsFile=/dev/null' \
-            -f -q -N -D "127.0.0.1:$JUMP_PROXY_PORT" \
+            -f -q -N -D "$JUMP_BIND_HOST:$JUMP_PROXY_PORT" \
         > /dev/null 2>&1
 
         clear
 
-        if [[ $(netstat -an | grep -c "$JUMP_PROXY_PORT") -lt 1 ]]; then
+        if [[ $(netstat -an | grep -c "$JUMP_BIND_HOST.$JUMP_PROXY_PORT") -lt 1 ]]; then
             echo "设置跳板机隧道失败"
             exit
         else

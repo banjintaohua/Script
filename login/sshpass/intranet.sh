@@ -7,7 +7,7 @@ function intranet_list() {
         echo '未设置内网服务器隧道'
     else
         echo "已设置内网服务器隧道"
-        netstat -an | grep -E "127.0.0.1.($JUMP_PROXY_PORT).*LISTEN"
+        netstat -an | grep -E "$JUMP_BIND_HOST.($JUMP_PROXY_PORT).*LISTEN"
         netstat -an | grep -E "$INTRANET_PROXY_HOST.($INTRANET_PROXY_PORT).*LISTEN"
         echo "执行 : intranet kill 删除内网服务器隧道"
         echo ""
@@ -81,7 +81,7 @@ function set_proxy() {
     if [[ $line -eq 0 ]]; then
         intranet_kill
 
-        if [[ $(netstat -an | grep -c "$JUMP_PROXY_PORT") -lt 1 ]]; then
+        if [[ $(netstat -an | grep -c "$JUMP_BIND_HOST.$JUMP_PROXY_PORT") -lt 1 ]]; then
             echo "正在设置跳板机隧道"
             source "$(dirname "$0")"/jump.sh login
         else
@@ -100,7 +100,7 @@ function set_proxy() {
 
         clear
 
-        if [[ $(netstat -an | grep -c "$INTRANET_PROXY_PORT") -lt 1 ]]; then
+        if [[ $(netstat -an | grep -c "$INTRANET_PROXY_HOST.$INTRANET_PROXY_PORT") -lt 1 ]]; then
             echo "设置内网服务器隧道失败"
             exit
         else

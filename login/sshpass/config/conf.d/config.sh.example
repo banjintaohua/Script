@@ -5,6 +5,7 @@
 # 跳板机
 JUMP_SERVER_USER='user'
 JUMP_SERVER='ip'
+JUMP_BIND_HOST="127.0.0.1"
 JUMP_SERVER_PORT='port'
 JUMP_SERVER_PASSWORD=$(path/to/script_password_decoder "U2FsdGVkX1+CyfZlxqHuFHTnhlRQw/QPlwaWaf63E3A=")
 JUMP_KNOW_HOST='[ip]:port'
