@@ -75,7 +75,7 @@ if [[ "$SSH_TYPE" == 'mosh' || "$2" == 'mosh' ]]; then
     sshpass -p "$PASSWORD" \
         mosh "$USER@$SERVER" \
         --ssh="ssh -p $PORT" \
-        "bash -l"
+        "$SHELL_TYPE -l"
 fi
 
 # 内网服务器
@@ -90,7 +90,7 @@ if [ "$SERVER_TYPE" == 'intranet' ]; then
             -o "ProxyCommand=nc -x 127.0.0.1:$JUMP_PROXY_PORT %h %p" \
             -v \
             -t \
-            "cd $WORK_DIRECTORY; clear; bash -l"
+            "cd $WORK_DIRECTORY; clear; $SHELL_TYPE -l"
     else
         sshpass -p "$JUMP_SERVER_PASSWORD" \
             ssh "$JUMP_SERVER_USER@$JUMP_SERVER" -p "$JUMP_SERVER_PORT" \
@@ -99,7 +99,7 @@ if [ "$SERVER_TYPE" == 'intranet' ]; then
             -o "UserKnownHostsFile /dev/null" \
             -v \
             -t \
-            "ssh $USER@$SERVER -p $PORT -o 'StrictHostKeyChecking=no' -o 'UserKnownHostsFile /dev/null' -v -t 'cd $WORK_DIRECTORY; clear; bash -l'"
+            "ssh $USER@$SERVER -p $PORT -o 'StrictHostKeyChecking=no' -o 'UserKnownHostsFile /dev/null' -v -t 'cd $WORK_DIRECTORY; clear; $SHELL_TYPE -l'"
     fi
 else
     if [ "$USE_PASSWORD" == 'yes' ]; then
@@ -110,7 +110,7 @@ else
             -o "UserKnownHostsFile /dev/null" \
             -v \
             -t \
-            "cd $WORK_DIRECTORY; export ENV=/etc/profile; clear; bash -l"
+            "cd $WORK_DIRECTORY; export ENV=/etc/profile; clear; $SHELL_TYPE -l"
     else
         ssh "$USER@$SERVER" -p "$PORT" \
             -o "ServerAliveInterval=60" \
@@ -119,6 +119,6 @@ else
             $FORWARDING \
             -v \
             -t \
-            "cd $WORK_DIRECTORY; export ENV=/etc/profile; clear; bash -l"
+            "cd $WORK_DIRECTORY; export ENV=/etc/profile; clear; $SHELL_TYPE -l"
     fi
 fi
