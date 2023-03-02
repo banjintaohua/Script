@@ -21,27 +21,24 @@ mysqlPort="$MYSQL_PORT"
 mysqlUser="$MYSQL_USER"
 mysqlPassword="$MYSQL_PASSWORD"
 maxDays=7
-dataSavingPath=/tmp
-database=mysql
-tables=(
-    user
-    slave_master_info
-)
+dataSavingPath=/tmp/mysql_backup
 
 # 失败立即退出
 set -e
 set -o pipefail
 
-# 使用说明
 function help() {
     sed -rn 's/^### ?//p' "$0"
     exit 1
 }
 
-function main() {
-    # 清理旧数据
-    test -d $dataSavingPath || mkdir -p $dataSavingPath
-    find "$dataSavingPath" -mtime +"$maxDays" -type f -exec rm -f '{}' \;
+function backup() {
+
+    # 解析需要备份的数据库和表
+    test $# -ne 2 && echo 'database/tables is required' && exit 1
+    database=$1
+    IFS=$','
+    tables=($2)
 
     # 按表粒度备份文件
     prefix=$(date -u "+%Y%m%d")
@@ -54,6 +51,18 @@ function main() {
 
     # 清理数据
     rm -f "$dataSavingPath"/*.sql
+}
+
+function main() {
+    # 清理旧数据
+    test -d $dataSavingPath || mkdir -p $dataSavingPath
+    find "$dataSavingPath" -mtime +"$maxDays" -type f -exec rm -f '{}' \;
+
+    # 备份1
+    backup mysql user,slave_master_info
+
+    # 备份2
+    backup information_schema VIEWS,TRIGGERS
 }
 
 # 解析脚本参数
