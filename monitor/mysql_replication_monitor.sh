@@ -68,7 +68,7 @@ function main() {
 
 # 解析脚本参数
 args=$(
-    /usr/local/opt/gnu-getopt/bin/getopt \
+    getopt \
         --option u::h::P::p::t::d \
         --long help,user::,host::,port::,password::,threshold::,dump \
         -- "$@"

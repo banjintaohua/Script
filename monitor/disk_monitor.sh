@@ -42,7 +42,7 @@ function main() {
 }
 
 # 解析脚本参数
-args=$(/usr/local/opt/gnu-getopt/bin/getopt --option hm:t: --long help,mount-point:,threshold: -- "$@")
+args=$(getopt --option hm:t: --long help,mount-point:,threshold: -- "$@")
 eval set -- "$args"
 test $# -le 1 && help && exit 1
 
