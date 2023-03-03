@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# shellcheck disable=SC2034
+BARK_URL="https://bark.foo.bar/abcdefg"
+
+# mysql_replication_monitor.sh
+MYSQL_HOST="localhost"
+MYSQL_PORT="3306"
+MYSQL_USER="root"
+MYSQL_PASSWORD="Ch@angeMe"

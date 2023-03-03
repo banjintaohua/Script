@@ -25,3 +25,4 @@
 !/login/sshpass/login.sh
 
 /monitor/config/conf.d/config.sh
+/backup/config/conf.d/config.sh
