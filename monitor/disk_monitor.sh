@@ -70,6 +70,10 @@ while true; do
             shift
             break
             ;;
+        *)
+            echo "invalid argument";
+            exit 1
+            ;;
     esac
 done
 

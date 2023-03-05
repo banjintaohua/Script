@@ -68,8 +68,8 @@ function main() {
 # 解析脚本参数
 args=$(
     getopt \
-        --option hd::p:: \
-        --long help,max-days::,path:: \
+        --option hd:p: \
+        --long help,max-days:,path: \
         -- "$@"
 )
 eval set -- "$args"
@@ -93,6 +93,10 @@ while true; do
         --)
             shift
             break
+            ;;
+        *)
+            echo "invalid argument";
+            exit 1
             ;;
     esac
 done
