@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ###
 ### Filename: mysql_replication_monitor.sh
 ### Author: banjintaohua

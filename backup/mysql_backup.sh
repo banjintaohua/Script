@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ###
 ### Filename: mysql_backup.sh
 ### Author: banjintaohua
@@ -69,10 +69,11 @@ function main() {
 args=$(
     getopt \
         --option hd::p:: \
-        --long help,max-days::--path:: \
+        --long help,max-days::,path:: \
         -- "$@"
 )
 eval set -- "$args"
+test $# -le 1 && help && exit 1
 
 # 处理脚本参数
 while true; do

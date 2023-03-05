@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ###
 ### Filename: disk_monitor.sh
 ### Author: banjintaohua
@@ -42,7 +42,12 @@ function main() {
 }
 
 # 解析脚本参数
-args=$(getopt --option hm:t: --long help,mount-point:,threshold: -- "$@")
+args=$(
+    getopt \
+        --option hm:t: \
+        --long help,mount-point:,threshold: \
+        -- "$@"
+)
 eval set -- "$args"
 test $# -le 1 && help && exit 1
 
