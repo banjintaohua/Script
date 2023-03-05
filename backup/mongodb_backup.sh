@@ -1,27 +1,30 @@
 #!/usr/bin/env bash
 ###
-### Filename: mysql_backup.sh
+### Filename: mongodb_backup.sh
 ### Author: banjintaohua
 ### Version: 1.0.0
 ###
 ### Description:
-###   mysqldump backup tables.
+###   mongodb backup
 ###
-### Usage: mysql_backup.sh [options...]
+### Usage: mongodb_backup.sh [options...]
 ###
 ### Options:
 ###   -h, --help         show help message.
 ###   -d, --max-days     days of data retention, the default is keep 7 days
-###   -p, --path         data saving path, the default is /tmp/mysql_backup
+###   -p, --path         data saving path, the default is /tmp/mongodb_backup
 
 # 读取配置信息
 source "$(dirname "$0")"/config/config.sh
-mysqlHost="$MYSQL_HOST"
-mysqlPort="$MYSQL_PORT"
-mysqlUser="$MYSQL_USER"
-mysqlPassword="$MYSQL_PASSWORD"
+mongodbHost="$MONGODB_HOST"
+mongodbPort="$MONGODB_PORT"
+mongodbUser="$MONGODB_USER"
+mongodbPassword="$MONGODB_PASSWORD"
+mongodbDatabase="$MONGODB_DATABASE"
+
+backupCollections="results"
 maxDays=7
-dataSavingPath=/tmp/mysql_backup
+dataSavingPath=/tmp/mongodb_backup
 
 # 失败立即退出
 set -e
@@ -33,23 +36,19 @@ function help() {
 }
 
 function backup() {
-    # 解析需要备份的数据库和表
-    test $# -ne 2 && echo 'database/tables is required' && exit 1
-    database=$1
+
+    # 解析需要备份的集合
+    test -z "$backupCollections" && echo 'collections is required' && exit 1
     IFS=$','
-    tables=($2)
+    collections=($backupCollections)
 
-    # 按表粒度备份文件
-    prefix=$(date -u "+%Y%m%d")
-    for table in  ${tables[*]}; do
-        mysqldump -h"$mysqlHost" -P"$mysqlPort" -u"$mysqlUser" -p"$mysqlPassword" -R -E "$database" "$table" > "$dataSavingPath"/"$prefix"_"$database"_"$table".sql
+    # 按集合粒度备份文件
+    for collection in  ${collections[*]}; do
+        mongodump --host="$mongodbHost" --port="$mongodbPort" \
+          --username="$mongodbUser" --password="$mongodbPassword" --authenticationDatabase="admin" \
+          --db="$mongodbDatabase" --collection="$collection" \
+          --archive="$dataSavingPath" --gzip
     done
-
-    # 打包压缩
-    (cd "$dataSavingPath" && tar -cvz -f "$prefix"_"$database".tar.gz ./*.sql)
-
-    # 清理数据
-    rm -f "$dataSavingPath"/*.sql
 }
 
 function main() {
@@ -57,18 +56,15 @@ function main() {
     test -d $dataSavingPath || mkdir -p $dataSavingPath
     find "$dataSavingPath" -mtime +"$maxDays" -type f -exec rm -f '{}' \;
 
-    # 备份1
-    backup mysql user,slave_master_info
-
-    # 备份2
-    backup information_schema VIEWS,TRIGGERS
+    # 备份
+    backup
 }
 
 # 解析脚本参数
 args=$(
     getopt \
         --option hd:p: \
-        --long help,max-days:,path: \
+        --long help,max-days:path: \
         -- "$@"
 )
 eval set -- "$args"

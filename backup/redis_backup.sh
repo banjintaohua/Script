@@ -21,8 +21,9 @@ source "$(dirname "$0")"/config/config.sh
 redisHost="$REDIS_HOST"
 redisPort="$REDIS_PORT"
 redisPassword="$REDIS_PASSWORD"
+
 prefix=$(date -u "+%Y%m%d")
-tmpFile=/tmp/"$prefix-redis-keys.txt"
+tmpFile="/tmp/$prefix-redis-keys.txt"
 outputFile="/tmp/$prefix-redis-key-value-pairs.txt"
 inputFile=$outputFile
 redisKeyName="foobar"
