@@ -42,7 +42,9 @@ function backup() {
     # 按表粒度备份文件
     prefix=$(date -u "+%Y%m%d")
     for table in  ${tables[*]}; do
-        mysqldump -h"$mysqlHost" -P"$mysqlPort" -u"$mysqlUser" -p"$mysqlPassword" -R -E "$database" "$table" > "$dataSavingPath"/"$prefix"_"$database"_"$table".sql
+        mysqldump -h"$mysqlHost" -P"$mysqlPort" -u"$mysqlUser" -p"$mysqlPassword" \
+            --single-transaction --quick \
+            -R -E "$database" "$table" > "$dataSavingPath"/"$prefix"_"$database"_"$table".sql
     done
 
     # 打包压缩
