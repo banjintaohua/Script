@@ -3,6 +3,7 @@
 # shellcheck disable=SC2034
 
 # Server Info
+# IP='127.0.0.1'
 USER='user'
 PORT='port'
 WORK_DIRECTORY='/home'
