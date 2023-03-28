@@ -71,11 +71,8 @@ fi
 
 # 连接类型
 if [[ "$SSH_TYPE" == 'mosh' || "$2" == 'mosh' ]]; then
-    SSH_TYPE='mosh -l'
-    sshpass -p "$PASSWORD" \
-        mosh "$USER@$SERVER" \
-        --ssh="ssh -p $PORT" \
-        "$SHELL_TYPE"
+    mosh --ssh="ssh -v -p $PORT -o 'StrictHostKeyChecking=no' -o 'UserKnownHostsFile /dev/null'" "$USER@$SERVER"
+    exit
 fi
 
 # 内网服务器

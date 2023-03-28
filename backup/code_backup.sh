@@ -7,6 +7,10 @@
 ### Description:
 ###   code backup
 ###
+### Exit Code:
+###   0  successful
+###   1  error
+###
 ### Usage: code_backup.sh [options...]
 ###
 ### Options:
