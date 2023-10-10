@@ -18,16 +18,12 @@
 
 # 读取配置信息
 source "$(dirname "$0")"/config/config.sh
-redisHost="$REDIS_HOST"
-redisPort="$REDIS_PORT"
-redisPassword="$REDIS_PASSWORD"
-
-prefix=$(date -u "+%Y%m%d")
-tmpFile="/tmp/$prefix-redis-keys.txt"
-outputFile="/tmp/$prefix-redis-key-value-pairs.txt"
-inputFile=$outputFile
-redisKeyName="foobar"
-mode="dump"
+PREFIX=$(date -u "+%Y%m%d")
+TMP_FILE="/tmp/$PREFIX-redis-keys.txt"
+OUTPUT_FILE="/tmp/$PREFIX-redis-key-value-pairs.txt"
+INPUT_FILE=$OUTPUT_FILE
+REDIS_KEY_NAME="foobar"
+MODE="dump"
 
 # 失败立即退出
 set -e
@@ -39,12 +35,12 @@ function help() {
 }
 
 function dump() {
-    redis-cli -h "$redisHost" -p "$redisPort" -a "$redisPassword" -n 0 keys "$redisKeyName" > "$tmpFile"
+    redis-cli -h "$REDIS_HOST" -p "$REDIS_PORT" -a "$REDIS_PASSWORD" -n 0 keys "$REDIS_KEY_NAME" > "$TMP_FILE"
     while read -r key
     do
-        value=$(redis-cli -h "$redisHost" -p "$redisPort" -a "$redisPassword" -n 0 get "$key")
-        echo "$key++$value" >> "$outputFile"
-    done < "$tmpFile"
+        value=$(redis-cli -h "$REDIS_HOST" -p "$REDIS_PORT" -a "$REDIS_PASSWORD" -n 0 get "$key")
+        echo "$key++$value" >> "$OUTPUT_FILE"
+    done < "$TMP_FILE"
 }
 
 function load() {
@@ -52,16 +48,16 @@ function load() {
     while read -r line
     do
         arr=($line)
-        redis-cli -h "$redisHost" -p "$redisPort" -a "$redisPassword" -n 0 set "${arr[0]}" "${arr[2]}"
-    done < "$inputFile"
+        redis-cli -h "$REDIS_HOST" -p "$REDIS_PORT" -a "$REDIS_PASSWORD" -n 0 set "${arr[0]}" "${arr[2]}"
+    done < "$INPUT_FILE"
 }
 
 function main() {
-    if [ $mode == "dump" ]; then
+    if [ $MODE == "dump" ]; then
         dump
     fi
 
-    if [ $mode == "load" ]; then
+    if [ $MODE == "load" ]; then
         load
     fi
 }
@@ -69,11 +65,11 @@ function main() {
 # 解析脚本参数
 args=$(
     getopt \
-        --option ho:i:k:m:: \
-        --long help,output-file:,input-file:,key:,mode:: \
+        --options ho:i:k:m:: \
+        --longoptions help,output-file:,input-file:,key:,mode:: \
         -- "$@"
 )
-eval set -- "$args"
+eval set -- "${args}"
 test $# -le 1 && help && exit 1
 
 # 处理脚本参数
@@ -84,28 +80,28 @@ while true; do
             break
             ;;
         -o | --output-file)
-            test "$mode" != "dump" && echo 'not dump mode' && exit
-            outputFile=$2
+            test "$MODE" != "dump" && echo 'not dump MODE' && exit
+            OUTPUT_FILE=$2
             shift 2
             ;;
         -i | --input-file)
-            test "$mode" != "load" && echo 'not load mode' && exit
-            inputFile=$2
+            test "$MODE" != "load" && echo 'not load MODE' && exit
+            INPUT_FILE=$2
             shift 2
             ;;
         -k | --key)
-            test "$mode" != "dump" && echo 'not dump mode' && exit
-            redisKeyName=$2
+            test "$MODE" != "dump" && echo 'not dump MODE' && exit
+            REDIS_KEY_NAME=$2
             shift 2
             ;;
         -m | --mode)
             case "$2" in
                 "")
-                  mode="dump"
+                  MODE="dump"
                   shift 2
                   ;;
                 *)
-                  mode="$2"
+                  MODE="$2"
                   shift 2
                   ;;
             esac;;

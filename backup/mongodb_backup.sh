@@ -16,15 +16,9 @@
 
 # 读取配置信息
 source "$(dirname "$0")"/config/config.sh
-mongodbHost="$MONGODB_HOST"
-mongodbPort="$MONGODB_PORT"
-mongodbUser="$MONGODB_USER"
-mongodbPassword="$MONGODB_PASSWORD"
-mongodbDatabase="$MONGODB_DATABASE"
-
-backupCollections="results"
-maxDays=7
-dataSavingPath=/tmp/mongodb_backup
+BACKUP_COLLECTIONS="results"
+MAX_DAYS=7
+DATA_SAVING_PATH=/tmp/mongodb_backup
 
 # 失败立即退出
 set -e
@@ -38,23 +32,23 @@ function help() {
 function backup() {
 
     # 解析需要备份的集合
-    test -z "$backupCollections" && echo 'collections is required' && exit 1
+    test -z "$BACKUP_COLLECTIONS" && echo 'collections is required' && exit 1
     IFS=$','
-    collections=($backupCollections)
+    collections=($BACKUP_COLLECTIONS)
 
     # 按集合粒度备份文件
     for collection in  ${collections[*]}; do
-        mongodump --host="$mongodbHost" --port="$mongodbPort" \
-          --username="$mongodbUser" --password="$mongodbPassword" --authenticationDatabase="admin" \
-          --db="$mongodbDatabase" --collection="$collection" \
-          --archive="$dataSavingPath" --gzip
+        mongodump --host="$MONGODB_HOST" --port="$MONGODB_PORT" \
+          --username="$MONGODB_USER" --password="$MONGODB_PASSWORD" --authenticationDatabase="admin" \
+          --db="$MONGODB_DATABASE" --collection="$collection" \
+          --archive="$DATA_SAVING_PATH" --gzip
     done
 }
 
 function main() {
     # 清理旧数据
-    test -d $dataSavingPath || mkdir -p $dataSavingPath
-    find "$dataSavingPath" -mtime +"$maxDays" -type f -exec rm -f '{}' \;
+    test -d $DATA_SAVING_PATH || mkdir -p $DATA_SAVING_PATH
+    find "$DATA_SAVING_PATH" -mtime +"$MAX_DAYS" -type f -exec rm -f '{}' \;
 
     # 备份
     backup
@@ -63,11 +57,11 @@ function main() {
 # 解析脚本参数
 args=$(
     getopt \
-        --option hd:p: \
-        --long help,max-days:path: \
+        --options hd:p: \
+        --longoptions help,max-days:path: \
         -- "$@"
 )
-eval set -- "$args"
+eval set -- "${args}"
 test $# -le 1 && help && exit 1
 
 # 处理脚本参数
@@ -78,11 +72,11 @@ while true; do
             break
             ;;
         -d | --max-days)
-            maxDays=$2
+            MAX_DAYS=$2
             shift 2
             ;;
         -p | --path)
-            dataSavingPath=$2
+            DATA_SAVING_PATH=$2
             shift 2
             ;;
         --)

@@ -15,8 +15,8 @@
 ###   -t, --threshold    threshold
 
 # 读取配置信息
-mountPoint="/"
-threshold=80
+MOUNT_POINT="/"
+THRESHOLD=80
 source "$(dirname "$0")"/config/config.sh
 
 # 失败立即退出
@@ -31,11 +31,11 @@ function help() {
 
 # 磁盘使用率过高则发送告警
 function main() {
-    diskUsage=$(df -h | grep -e " $mountPoint$" | awk '{print $5}' | sed 's/%//g')
-    if [[ $diskUsage -ge $threshold ]]; then
-        localIp=$(ifconfig eth0 | grep 'inet ' | awk '{print $2}')
+    disk_usage=$(df -h | grep -e " $MOUNT_POINT$" | awk '{print $5}' | sed 's/%//g')
+    if [[ $disk_usage -ge $THRESHOLD ]]; then
+        local_ip=$(ifconfig eth0 | grep 'inet ' | awk '{print $2}')
         curl --location --request POST "$BARK_URL" \
-            --form "title=$localIp $mountPoint disk usage reaches $diskUsage%" \
+            --form "title=$local_ip $MOUNT_POINT disk usage reaches $disk_usage%" \
             --form "body=please release the disk space" \
             --form "group=monitor" > /dev/null 2>&1
     fi
@@ -44,11 +44,11 @@ function main() {
 # 解析脚本参数
 args=$(
     getopt \
-        --option hm:t: \
-        --long help,mount-point:,threshold: \
+        --options hm:t: \
+        --longoptions help,mount-point:,THRESHOLD: \
         -- "$@"
 )
-eval set -- "$args"
+eval set -- "${args}"
 test $# -le 1 && help && exit 1
 
 # 处理脚本参数
@@ -59,11 +59,11 @@ while true; do
             break
             ;;
         -m | --mount-point)
-            mountPoint=$2
+            MOUNT_POINT=$2
             shift 2
             ;;
         -t | --threshold)
-            threshold=$2
+            THRESHOLD=$2
             shift 2
             ;;
         --)

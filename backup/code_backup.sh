@@ -24,12 +24,12 @@
 
 # 配置信息
 source "$(dirname "$0")"/config/config.sh
-remoteHost="10.211.55.3"
-remotePort="22"
-remoteUser="root"
-remotePath="/home/docker/docker"
-localPath="/tmp/docker"
-mode="pull"
+REMOTE_HOST="10.211.55.3"
+REMOTE_PORT="22"
+REMOTE_USER="root"
+REMOTE_PATH="/home/docker/docker"
+LOCAL_PATH="/tmp/docker"
+MODE="pull"
 
 # 失败立即退出
 set -e
@@ -41,29 +41,29 @@ function help() {
 }
 
 function main() {
-    test -d $localPath || mkdir -p $localPath
+    test -d $LOCAL_PATH || mkdir -p $LOCAL_PATH
 
-    if [ $mode == "pull" ]; then
+    if [ $MODE == "pull" ]; then
         rsync --archive --verbose --compress --progress \
-            -e "ssh -p $remotePort" \
-            "$remoteUser@$remoteHost:$remotePath" "$localPath"
+            -e "ssh -p $REMOTE_PORT" \
+            "$REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH" "$LOCAL_PATH"
     fi
 
-    if [ $mode == "push" ]; then
+    if [ $MODE == "push" ]; then
         rsync --archive --verbose --compress --progress \
-            -e "ssh -p $remotePort" \
-            "$localPath" "$remoteUser@$remoteHost:$remotePath"
+            -e "ssh -p $REMOTE_PORT" \
+            "$LOCAL_PATH" "$REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH"
     fi
 }
 
 # 解析脚本参数
 args=$(
     getopt \
-        --option d:p:u:p:l:m::h \
-        --long help,host:,port:,user:,path:,local-path:,mode:: \
+        --options d:p:u:p:l:m::h \
+        --longoptions help,host:,port:,user:,path:,local-path:,mode:: \
         -- "$@"
 )
-eval set -- "$args"
+eval set -- "${args}"
 test $# -le 1 && help && exit 1
 
 # 处理脚本参数
@@ -74,33 +74,33 @@ while true; do
             break
             ;;
         -h | --host)
-            remoteHost=$2
-            break
+            REMOTE_HOST=$2
+            shift 2
             ;;
         --port)
-            remotePort=$2
+            REMOTE_PORT=$2
             shift 2
             ;;
         -u | --user)
-            remoteUser=$2
+            REMOTE_USER=$2
             shift 2
             ;;
         -p | --path)
-            remotePath=$2
+            REMOTE_PATH=$2
             shift 2
             ;;
         -l | --local-path)
-            localPath=$2
+            LOCAL_PATH=$2
             shift 2
             ;;
         -m | --mode)
             case "$2" in
                 "")
-                  mode="pull"
+                  MODE="pull"
                   shift 2
                   ;;
                 *)
-                  mode="$2"
+                  MODE="$2"
                   shift 2
                   ;;
             esac;;

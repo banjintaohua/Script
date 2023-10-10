@@ -18,8 +18,8 @@
 ### Example: update_certificate.sh --domain=*.foo.bar
 
 # 读取配置信息
-outputPath='./'
-domain=
+OUTPUT_PATH='./'
+DOMAIN=
 
 # 失败立即退出
 set -e
@@ -32,20 +32,20 @@ function help() {
 }
 
 function main() {
-    containerId=$(docker ps --format "{{.ID}} {{.Names}}" | grep acme | awk '{print $1}')
-    if [ -z "$containerId" ]; then
+    container_id=$(docker ps --format "{{.ID}} {{.Names}}" | grep acme | awk '{print $1}')
+    if [ -z "$container_id" ]; then
         echo "Container not exist"
         exit 1
     fi
 
-    certificate=/acme.sh/"$domain"_ecc/"$domain".cer
-    if ! docker exec "$containerId" test -f "$certificate"; then
+    certificate=/acme.sh/"$DOMAIN"_ecc/"$DOMAIN".cer
+    if ! docker exec "$container_id" test -f "$certificate"; then
         echo "certificate not exist"
         exit 1
     fi
 
     # 检测证书是否在 604800 秒（7 天）内过期
-    if docker exec "$containerId" openssl x509 -checkend 604800 -noout -in "$certificate"; then
+    if docker exec "$container_id" openssl x509 -checkend 604800 -noout -in "$certificate"; then
         echo "Certificate is good for another day!"
         exit 0
     fi
@@ -54,34 +54,34 @@ function main() {
     echo "(or is invalid/not found)"
 
     # 更新证书
-    docker exec "$containerId" /root/.acme.sh/acme.sh --renew --insecure --force --ecc -d "${domain}"
+    docker exec "$container_id" /root/.acme.sh/acme.sh --renew --insecure --force --ecc -d "${DOMAIN}"
 
     # 删除旧证书
-    docker exec "$containerId" mkdir -p "/acme.sh/${domain}_ecc/backup"
-    docker exec "$containerId" rm -f /acme.sh/"${domain}"_ecc/backup/*
+    docker exec "$container_id" mkdir -p "/acme.sh/${DOMAIN}_ecc/backup"
+    docker exec "$container_id" rm -f /acme.sh/"${DOMAIN}"_ecc/backup/*
     echo "Old certificate has been deleted"
-    docker exec "$containerId" ls -al /acme.sh/"${domain}"_ecc/backup
+    docker exec "$container_id" ls -al /acme.sh/"${DOMAIN}"_ecc/backup
 
     # 重新安装证书
     echo "reinstall certificate"
-    docker exec "$containerId" /root/.acme.sh/acme.sh --installcert --ecc -d "$domain" \
-      --fullchain-file /acme.sh/"${domain}"_ecc/backup/wildcard-certificate.crt \
-      --key-file /acme.sh/"${domain}"_ecc/backup/wildcard-certificate.key
+    docker exec "$container_id" /root/.acme.sh/acme.sh --installcert --ecc -d "$DOMAIN" \
+      --fullchain-file /acme.sh/"${DOMAIN}"_ecc/backup/wildcard-certificate.crt \
+      --key-file /acme.sh/"${DOMAIN}"_ecc/backup/wildcard-certificate.key
 
     # 导出配置文件
-    docker cp "$containerId":/acme.sh/"${domain}"_ecc/backup/wildcard-certificate.crt "$outputPath"
-    docker cp "$containerId":/acme.sh/"${domain}"_ecc/backup/wildcard-certificate.key "$outputPath"
+    docker cp "$container_id":/acme.sh/"${DOMAIN}"_ecc/backup/wildcard-certificate.crt "$OUTPUT_PATH"
+    docker cp "$container_id":/acme.sh/"${DOMAIN}"_ecc/backup/wildcard-certificate.key "$OUTPUT_PATH"
     # docker exec nginx nginx -s reload
 }
 
 # 解析脚本参数
 args=$(
     getopt \
-        --option hd:o:: \
-        --long help,domain:,output:: \
+        --options hd:o:: \
+        --longoptions help,domain:,output:: \
         -- "$@"
 )
-eval set -- "$args"
+eval set -- "${args}"
 test $# -le 1 && help && exit 1
 
 # 处理脚本参数
@@ -92,11 +92,11 @@ while true; do
             break
             ;;
         -d | --domain)
-            domain=$2
+            DOMAIN=$2
             shift 2
             ;;
         -o | --output)
-            outputPath=$2
+            OUTPUT_PATH=$2
             shift 2
             ;;
         --)
@@ -111,7 +111,7 @@ while true; do
 done
 
 # 检查必填选项
-if [ -z "${domain}" ]; then
+if [ -z "${DOMAIN}" ]; then
   echo "Option '--domain' is required." 1>&2
   exit 1
 fi
