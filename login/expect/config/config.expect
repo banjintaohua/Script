@@ -1,4 +1,4 @@
-#!/usr/bin/expect
+#!/usr/bin/env expect
 
 # 跳板机
 set JUMP_SERVER_USER            user
@@ -17,23 +17,25 @@ set INTRANET_SERVER_PASSWORD    password
 set JUMP_PROXY_PORT             1234
 set INTRANET_PROXY_PORT         1234
 
-# 服务器信息
-set $One                        192.168.8.1
-set $Two                        192.168.8.2
-set $Three                      192.168.8.3
-set $Four                       192.168.8.4
-set $Five                       192.168.8.5
-set $Six                        192.168.8.6
-set $Seven                      192.168.8.7
-set $Eight                      192.168.8.8
-set $Nine                       192.168.8.9
-set $Ten                        192.168.8.10
-set $Eleven                     192.168.8.11
-set $Twelve                     192.168.8.12
-set $Thirteen                   192.168.8.13
-set $Fourteen                   192.168.8.14
-set $Fifteen                    192.168.8.15
-set $Sixteen                    192.168.8.16
-set $Seventeen                  192.168.8.17
-set $Eighteen                   192.168.8.18
-set $Nineteen                   192.168.8.19
+# 服务器列表
+set SERVER_LIST [list \
+    "192.168.8.1" \
+    "192.168.8.2" \
+    "192.168.8.3" \
+    "192.168.8.4" \
+    "192.168.8.5" \
+    "192.168.8.6" \
+    "192.168.8.7" \
+    "192.168.8.8" \
+    "192.168.8.9" \
+    "192.168.8.10" \
+    "192.168.8.11" \
+    "192.168.8.12" \
+    "192.168.8.13" \
+    "192.168.8.14" \
+    "192.168.8.15" \
+    "192.168.8.16" \
+    "192.168.8.17" \
+    "192.168.8.18" \
+    "192.168.8.19" \
+]

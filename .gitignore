@@ -15,6 +15,7 @@
 !/login/expect/intranet.expect
 !/login/expect/jump.expect
 !/login/expect/login.expect
+!/login/expect/example.expect
 
 !/login/sshpass/config/config.sh
 !/login/sshpass/config/conf.d/config.sh.example

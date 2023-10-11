@@ -1,0 +1,36 @@
+#!/usr/bin/env expect
+
+# 读取服务器信息
+source /path/to/file
+
+# 获取文件名(文件名被命名为了服务器 IP)
+spawn echo $argv0
+expect {
+    -re {/(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}).expect} {
+        set TARGET $expect_out(1,string)
+    }
+}
+
+# 连接跳板机
+spawn ssh -p $JUMP_SERVER_PORT $JUMP_SERVER_USER@$JUMP_SERVER \
+    -o "ServerAliveInterval=60" \
+    -o "StrictHostKeyChecking=no" \
+    -o "UserKnownHostsFile /dev/null"
+
+expect {
+        "(yes/no)?"
+            {send "yes\n"; exp_continue}
+        "password:"
+            {send "$JUMP_SERVER_PASSWORD\n"; exp_continue}
+}
+
+# 连接内网服务器
+expect {
+        "$JUMP_SERVER_USER"
+            {send "ssh -v -p $INTRANET_SERVER_PORT $INTRANET_SERVER_USER@$INTRANET_SERVER\n"; exp_continue}
+        "$INTRANET_SERVER_USER@$INTRANET's password:"
+            {send "$INTRANET_SERVER_PASSWORD\n"; exp_continue}
+        "~"
+            {send "clear\n"}
+}
+interact
