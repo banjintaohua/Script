@@ -113,7 +113,6 @@ else
             -o "ServerAliveInterval=60" \
             -o "StrictHostKeyChecking=no" \
             -o "UserKnownHostsFile /dev/null" \
-            "$FORWARDING" \
             -v \
             -t \
             "cd $WORK_DIRECTORY; export ENV=/etc/profile; clear; $SHELL_TYPE"
