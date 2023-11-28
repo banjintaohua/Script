@@ -45,7 +45,7 @@ function main() {
 args=$(
     getopt \
         --options hm:t: \
-        --longoptions help,mount-point:,THRESHOLD: \
+        --longoptions help,mount-point:,threshold: \
         -- "$@"
 )
 eval set -- "${args}"
