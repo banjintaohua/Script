@@ -65,7 +65,7 @@ spawn ssh -p $JUMP_SERVER_PORT $JUMP_SERVER_USER@$JUMP_SERVER \
     -o "StrictHostKeyChecking=no" \
     -o "UserKnownHostsFile /dev/null" \
     -tt \
-    "ssh $INTRANET_SERVER_USER@$INTRANET_SERVER -p $INTRANET_SERVER_PORT -o 'StrictHostKeyChecking=no' -o 'UserKnownHostsFile /dev/null' -tt"
+    "ssh $INTRANET_SERVER_USER@$INTRANET_SERVER -p $INTRANET_SERVER_PORT -o 'StrictHostKeyChecking=no' -o 'UserKnownHostsFile /dev/null' -tt $INTRANET_SERVER_COMMAND"
 
 expect {
         "(yes/no)?"

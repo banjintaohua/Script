@@ -5,3 +5,4 @@ set INTRANET_SERVER_USER           root
 set INTRANET_SERVER                192.168.8.8
 set INTRANET_SERVER_PASSWORD       [exec password_decoder "xxxxxxxxxxx"]
 set WORK_DIRECTORY                 /home
+set INTRANET_SERVER_COMMAND        w

@@ -12,6 +12,7 @@ set INTRANET_SERVER_USER        user
 set INTRANET_SERVER             ip
 set INTRANET_SERVER_PORT        port
 set INTRANET_SERVER_PASSWORD    password
+set INTRANET_SERVER_COMMAND     w
 
 # 端口映射
 set JUMP_PROXY_PORT             1234
